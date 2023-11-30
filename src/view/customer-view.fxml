@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomerController">
+   <children>
+      <AnchorPane layoutX="29.0" layoutY="23.0" prefHeight="554.0" prefWidth="966.0" style="-fx-border-color: grey; -fx-border-radius: 20;">
+         <children>
+            <TableView fx:id="customerTableView" layoutX="14.0" layoutY="94.0" prefHeight="391.0" prefWidth="902.0">
+              <columns>
+                <TableColumn fx:id="customerIdColumn" prefWidth="94.0" text="Customer ID" />
+                <TableColumn fx:id="customerNameColumn" prefWidth="147.0" text="Customer Name" />
+                  <TableColumn fx:id="customerPhoneColumn" prefWidth="140.0" text="Phone Number" />
+                  <TableColumn fx:id="customerAddressColumn" minWidth="5.0" prefWidth="170.0" text="Address" />
+                  <TableColumn fx:id="customerPostColumn" minWidth="1.0" prefWidth="88.0" text="Postal Code" />
+                  <TableColumn fx:id="customerCountryColumn" minWidth="7.0" prefWidth="132.0" text="Country" />
+                  <TableColumn fx:id="customerStateColumn" prefWidth="130.0" text="State / Province" />
+              </columns>
+            </TableView>
+            <RadioButton fx:id="viewAllRadioBtn" layoutX="31.0" layoutY="65.0" mnemonicParsing="false" onAction="#onActionViewAll" text="View All Appointments">
+               <toggleGroup>
+                  <ToggleGroup fx:id="tgMainView" />
+               </toggleGroup></RadioButton>
+            <RadioButton fx:id="viewCustomersRadioBtn" disable="true" layoutX="483.0" layoutY="65.0" mnemonicParsing="false" onAction="#onActionViewCustomers" selected="true" text="View / Update Customers" />
+            <Label layoutX="27.0" layoutY="32.0" text="Appointment Schedule">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <Button layoutX="15.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionAddCust" prefWidth="140.0" text="Add Customer" />
+            <Button layoutX="205.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionUpdateCust" prefWidth="140.0" text="Update Customer" />
+            <Button layoutX="395.0" layoutY="498.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionDeleteCust" prefWidth="140.0" text="Delete Customer" />
+            <Button layoutX="585.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionReport" prefWidth="140.0" text=" Reports" />
+            <Button layoutX="775.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionLogOut" prefWidth="140.0" text="Logout" />
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>

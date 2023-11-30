@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="controller.AppointmentController">
+    <children>
+        <AnchorPane layoutX="29.0" layoutY="23.0" prefHeight="554.0" prefWidth="966.0" style="-fx-border-color: grey; -fx-border-radius: 20;">
+            <children>
+                <TableView fx:id="appointmentTableView" layoutX="14.0" layoutY="94.0" prefHeight="391.0" prefWidth="902.0">
+                    <columns>
+                        <TableColumn fx:id="apptIdColumn" prefWidth="75.0" text="Appt ID" />
+                        <TableColumn fx:id="apptTitleColumn" prefWidth="75.0" text="Title" />
+                        <TableColumn fx:id="apptDescriptionColumn" prefWidth="75.0" text="Description" />
+                        <TableColumn fx:id="apptLocationColumn" prefWidth="75.0" text="Location" />
+                        <TableColumn fx:id="apptContactColumn" prefWidth="75.0" text="Contact" />
+                        <TableColumn fx:id="apptTypeColumn" prefWidth="75.0" text="Type" />
+                        <TableColumn fx:id="apptStartTimeColumn" prefWidth="75.0" text="Start Time" />
+                        <TableColumn fx:id="apptEndTimeColumn" prefWidth="75.0" text="End Time" />
+                        <TableColumn fx:id="apptStartDateColumn" prefWidth="75.0" text="Start Date" />
+                        <TableColumn fx:id="apptEndDateColumn" prefWidth="75.0" text="End Date" />
+                        <TableColumn fx:id="apptCustomerIdColumn" prefWidth="75.0" text="Customer ID" />
+                        <TableColumn fx:id="apptUserIdColumn" prefWidth="75.0" text="User ID" />
+                    </columns>
+                </TableView>
+                <TextField fx:id="appointmentSearchTxt" layoutX="756.0" layoutY="52.0" />
+                <RadioButton fx:id="viewMonthRadioBtn" layoutX="205.0" layoutY="65.0" mnemonicParsing="false" onAction="#onActionViewMonth" text="View by Month">
+                    <toggleGroup>
+                        <ToggleGroup fx:id="tgMainView" />
+                    </toggleGroup>
+                </RadioButton>
+                <RadioButton fx:id="viewWeekRadioBtn" layoutX="345.0" layoutY="65.0" mnemonicParsing="false" onAction="#onActionViewWeek" text="View by Week" toggleGroup="$tgMainView" />
+                <RadioButton fx:id="viewAllRadioBtn" layoutX="31.0" layoutY="65.0" mnemonicParsing="false" onAction="#onActionViewAll" selected="true" text="View All Appointments" toggleGroup="$tgMainView" />
+                <RadioButton fx:id="viewCustomersRadioBtn" layoutX="483.0" layoutY="65.0" mnemonicParsing="false" onAction="#onActionViewCustomers" text="View / Update Customers" />
+                <Label layoutX="27.0" layoutY="32.0" text="Appointment Schedule">
+                    <font>
+                        <Font size="16.0" />
+                    </font>
+                </Label>
+                <Button layoutX="15.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionAddAppt" prefWidth="140.0" text="Add Appointments" />
+                <Button layoutX="205.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionModifyAppt" prefWidth="140.0" text="Modify Appointments" />
+                <Button layoutX="395.0" layoutY="498.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionDeleteAppt" prefWidth="140.0" text="Delete Appointments" />
+                <Button layoutX="585.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionReport" prefWidth="140.0" text=" Reports" />
+                <Button layoutX="775.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionLogOut" prefWidth="140.0" text="Logout" />
+                <Label layoutX="638.0" layoutY="6.0" text="Your Time Zone:" />
+                <Label fx:id="localTimeZone" layoutX="730.0" layoutY="6.0" text="America / Denver" />
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>
