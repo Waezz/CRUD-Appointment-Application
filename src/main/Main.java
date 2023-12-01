@@ -10,6 +10,12 @@ import java.io.IOException;
 
 public class Main extends Application {
 
+    /**
+     * Start Method for setting up the initial scene.
+     * @param stage The primary stage for this application.
+     * @throws IOException If the FXML file for the log in screen cannot be loaded.
+     */
+   @Override
     public void start(Stage stage) throws IOException {
 
         FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/view/login-view.fxml"));
@@ -19,10 +25,12 @@ public class Main extends Application {
         stage.show();
     }
 
+
+
     public static void main(String[] args) {
 
-        // JDBC.openConnection();
-        launch();
+        JDBC.openConnection();
+        launch(args);
 
 
 
