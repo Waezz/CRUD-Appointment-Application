@@ -1,32 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="controller.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="375.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.LoginController">
     <children>
-        <Label contentDisplay="BOTTOM" layoutX="47.0" layoutY="35.0" text="Appointment Managment System">
+        <Label fx:id="mainAppLabel" contentDisplay="BOTTOM" layoutX="47.0" layoutY="35.0" text="Appointment Managment System">
             <font>
                 <Font size="20.0" />
             </font>
         </Label>
         <AnchorPane layoutX="38.0" layoutY="61.0" prefHeight="350.0" prefWidth="300.0" style="-fx-border-color: grey; -fx-border-radius: 20;">
             <children>
-                <Label layoutX="40.0" layoutY="67.0" text="UserName" />
-                <Label layoutX="42.0" layoutY="106.0" text="Password" />
-                <Label layoutX="54.0" layoutY="251.0" text="Language" />
-                <Label layoutX="52.0" layoutY="290.0" text="Time Zone" />
+                <Label fx:id="userNameLabel" layoutX="40.0" layoutY="67.0" text="UserName" />
+                <Label fx:id="passwordLabel" layoutX="42.0" layoutY="106.0" text="Password" />
+                <Label fx:id="languageLabel" layoutX="54.0" layoutY="251.0" text="Language" />
+                <Label fx:id="zoneLabel" layoutX="52.0" layoutY="290.0" text="Time Zone" />
                 <TextField fx:id="userNameTxt" layoutX="109.0" layoutY="63.0" />
                 <TextField fx:id="passWordTxt" layoutX="109.0" layoutY="102.0" />
-                <Button fx:id="loginBtn" layoutX="148.0" layoutY="149.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#loginBtnPressed" prefWidth="50.0" text="Login" />
-                <ComboBox layoutX="123.0" layoutY="248.0" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="20.0" prefWidth="100.0" />
-                <Label layoutX="136.0" layoutY="290.0" text="USA / Denver" />
-                <Button fx:id="exitBtn" layoutX="210.0" layoutY="149.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#exitBtnPressed" prefWidth="50.0" text="Exit" />
+                <Button fx:id="loginBtnLabel" layoutX="148.0" layoutY="149.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#loginBtnPressed" prefWidth="50.0" text="Login" />
+                <Label fx:id="userLocationLabel" layoutX="136.0" layoutY="290.0" text="USA / Denver" />
+                <Button fx:id="exitBtnLabel" layoutX="210.0" layoutY="149.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#exitBtnPressed" prefWidth="50.0" text="Exit" />
+            <Label fx:id="userLanguageLabel" layoutX="136.0" layoutY="251.0" text="English" />
             </children>
         </AnchorPane>
     </children>
