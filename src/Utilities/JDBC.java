@@ -1,7 +1,9 @@
 package Utilities;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public abstract class JDBC {
     private static final String protocol = "jdbc";
@@ -13,6 +15,16 @@ public abstract class JDBC {
     private static final String userName = "sqlUser"; // Username
     private static String password = "Passw0rd!"; // Password
     public static Connection connection;  // Connection Interface
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            Class.forName(driver);
+            return DriverManager.getConnection(jdbcUrl, userName, password);
+        } catch (ClassNotFoundException e) {
+            System.out.println("Database driver not found: " + e.getMessage());
+            throw new SQLException("Driver not found", e);
+        }
+    }
 
     public static void openConnection()
     {

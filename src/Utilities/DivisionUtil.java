@@ -8,19 +8,21 @@ import java.sql.SQLException;
 
 public class DivisionUtil {
 
-    public static String getCountryNameByDivisionId(int divisionId) {
-        String  query = "SELECT C.Country" +
-                        "FROM first_level_divisions FLD" +
-                        "JOIN countries C on FLD.Country_ID = C.Country_ID" +
+    public static CountryDivision getCountryAndDivisionByDivisionId(int divisionId) {
+        String  query = "SELECT C.Country, FLD.Division " +
+                        "FROM first_level_divisions FLD " +
+                        "JOIN countries C ON FLD.Country_ID = C.Country_ID " +
                         "WHERE FLD.Division_ID = ?";
-        try (Connection conn = JDBC.connection;
+        try (Connection conn = JDBC.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setInt(1, divisionId);
 
             try (ResultSet rs =pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getString("Country");
+                    String country =  rs.getString("Country");
+                    String division = rs.getString("Division");
+                    return new CountryDivision(country,division);
                 }
             }
         } catch (SQLException e) {

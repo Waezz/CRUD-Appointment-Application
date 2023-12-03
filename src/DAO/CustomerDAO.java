@@ -1,5 +1,6 @@
 package DAO;
 
+import Utilities.CountryDivision;
 import Utilities.JDBC;
 import Utilities.DivisionUtil;
 import com.mysql.cj.jdbc.JdbcConnection;
@@ -30,10 +31,16 @@ public class CustomerDAO {
                 String postalCode = rs.getString("Postal_Code");
                 String phone = rs.getString("Phone");
                 int divisionId = rs.getInt("Division_ID");
-                String divisionName =rs.getString("Division");
 
-                //Use helper function to get the country name from divisionID
-                String country = DivisionUtil.getCountryNameByDivisionId(divisionId);
+
+                //Use helpers function to get the country name and division from divisionID
+                CountryDivision countryDivision = DivisionUtil.getCountryAndDivisionByDivisionId(divisionId);
+                String country = countryDivision != null ? countryDivision.getCountry() : "";
+                String divisionName = countryDivision != null ? countryDivision.getDivision() : "";
+
+                //Debugging
+                System.out.println("Fetched customer: " + id + " - " + name);
+
 
                 //Create a customer object and add it to the list
                 Customer customer = new Customer(id, name, address, postalCode, phone, divisionId, divisionName, country);

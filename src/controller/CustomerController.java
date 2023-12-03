@@ -1,45 +1,53 @@
 package controller;
 
+import DAO.CustomerDAO;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import model.Customer;
 
 import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
 
-public class CustomerController {
+public class CustomerController implements Initializable {
 
     Stage stage;
     Parent scene;
 
 
     @FXML
-    private TableColumn<?, ?> customerAddressColumn;
+    private TableColumn<Customer, String> customerAddressColumn;
 
     @FXML
-    private TableColumn<?, ?> customerCountryColumn;
+    private TableColumn<Customer, String> customerCountryColumn;
 
     @FXML
-    private TableColumn<?, ?> customerIdColumn;
+    private TableColumn<Customer, Integer> customerIdColumn;
 
     @FXML
-    private TableColumn<?, ?> customerNameColumn;
+    private TableColumn<Customer, String> customerNameColumn;
 
     @FXML
-    private TableColumn<?, ?> customerPhoneColumn;
+    private TableColumn<Customer, String> customerPhoneColumn;
 
     @FXML
-    private TableColumn<?, ?> customerPostColumn;
+    private TableColumn<Customer, String> customerPostColumn;
 
     @FXML
-    private TableColumn<?, ?> customerStateColumn;
+    private TableColumn<Customer, String> customerStateColumn;
 
     @FXML
-    private TableView<?> customerTableView;
+    private TableView<Customer> customerTableView;
 
     @FXML
     private ToggleGroup tgMainView;
@@ -125,6 +133,31 @@ public class CustomerController {
     @FXML
     void onActionViewCustomers(ActionEvent event) {
 
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        setUpCustomerTable();
+        loadCustomerData();
+    }
+
+    private void setUpCustomerTable() {
+       customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
+       customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+       customerAddressColumn.setCellValueFactory(new PropertyValueFactory<>("address"));
+       customerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
+       customerPostColumn.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+       customerCountryColumn.setCellValueFactory(new PropertyValueFactory<>("country"));
+       customerStateColumn.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
+    }
+
+    private void loadCustomerData() {
+        try {
+            ObservableList<Customer> customerData = CustomerDAO.getAllCustomers();
+            customerTableView.setItems(customerData);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
