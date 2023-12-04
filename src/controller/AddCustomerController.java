@@ -1,8 +1,13 @@
 package controller;
 
+import DAO.CountryDAO;
+import Utilities.DivisionUtil;
+import javafx.collections.ObservableArrayBase;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -11,8 +16,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
 
-public class AddCustomerController {
+public class AddCustomerController implements Initializable {
 
     Stage stage;
     Parent scene;
@@ -22,7 +30,7 @@ public class AddCustomerController {
     private TextField custAddressTxt;
 
     @FXML
-    private ComboBox<?> custCountryBox;
+    private ComboBox<String> custCountryBox;
 
     @FXML
     private TextField custIdTxt;
@@ -37,7 +45,7 @@ public class AddCustomerController {
     private TextField custPostalTxt;
 
     @FXML
-    private ComboBox<?> custStateBox;
+    private ComboBox<String> custStateBox;
 
     @FXML
     void onActionCustSave(ActionEvent event) {
@@ -57,4 +65,29 @@ public class AddCustomerController {
         stage.show();
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        try {
+            ObservableList<String> countryList = CountryDAO.getAllCountries();
+            custCountryBox.setItems(countryList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        /**
+         * Add Listener to the Country combo box to update the state/ province when a country is selected
+         */
+        custCountryBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            updateStateBox(newValue);
+        });
+    }
+
+    private void updateStateBox(String country) {
+        try {
+            ObservableList<String> divisionList = DivisionUtil.getDivisionsByCountry(country);
+            custStateBox.setItems(divisionList);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }
