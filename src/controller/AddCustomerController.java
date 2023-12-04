@@ -1,6 +1,7 @@
 package controller;
 
 import DAO.CountryDAO;
+import DAO.CustomerDAO;
 import Utilities.DivisionUtil;
 import javafx.collections.ObservableArrayBase;
 import javafx.collections.ObservableList;
@@ -10,10 +11,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Customer;
 
 import java.io.IOException;
 import java.net.URL;
@@ -50,6 +53,35 @@ public class AddCustomerController implements Initializable {
     @FXML
     void onActionCustSave(ActionEvent event) {
 
+            String name = custNameTxt.getText();
+            String address = custAddressTxt.getText();
+            String postalCode = custPostalTxt.getText();
+            String phone = custPhoneTxt.getText();
+            String divisionName = custStateBox.getValue();
+
+            // Convert division name to division ID
+            int divisionId = DivisionUtil.getDivisionIdByDivisionName(divisionName);
+
+            Customer newCustomer = new Customer(0, name, address, postalCode, phone, divisionId);
+
+            try {
+                CustomerDAO.addCustomer(newCustomer);
+                showAlert("The new Customer has been successfully added.", "Customer Added", Alert.AlertType.CONFIRMATION);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                showAlert("An error has occurred while adding the customer: " + e.getMessage(), "Error", Alert.AlertType.ERROR);
+            }
+
+
+    }
+
+    public static void showAlert(String content, String title, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setGraphic(null); //Remove ugly icon
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 
     /**

@@ -45,7 +45,7 @@ public class DivisionUtil {
     public static int getDivisionIdByDivisionName(String divisionName) {
         String query = "SELECT Division_ID FROM first_level_divisions WHERE Division = ?";
 
-        try (Connection conn = JDBC.connection;
+        try (Connection conn = JDBC.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             pstmt.setString(1, divisionName);
@@ -67,7 +67,7 @@ public class DivisionUtil {
      * Method that filters divisions based on the Country name.
      * @param country The country to be filtered
      * @return The associated states/ provinces of said country.
-     * @throws SQLException If a database access error occurs/
+     * @throws SQLException If a database access error occurs.
      */
     public static ObservableList<String> getDivisionsByCountry(String country) throws SQLException {
         String query = "SELECT Division FROM first_level_divisions FLD " +

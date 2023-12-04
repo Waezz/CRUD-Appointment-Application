@@ -1,6 +1,8 @@
 package controller;
 
 import DAO.CustomerDAO;
+import Utilities.CountryDivision;
+import Utilities.DivisionUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -154,6 +156,13 @@ public class CustomerController implements Initializable {
     private void loadCustomerData() {
         try {
             ObservableList<Customer> customerData = CustomerDAO.getAllCustomers();
+            for (Customer customer : customerData) {
+                CountryDivision countryDivision = DivisionUtil.getCountryAndDivisionByDivisionId(customer.getDivisionId());
+                if (countryDivision != null) {
+                    customer.setCountry(countryDivision.getCountry());
+                    customer.setDivisionName(countryDivision.getDivision());
+                }
+            }
             customerTableView.setItems(customerData);
         } catch (SQLException e) {
             e.printStackTrace();

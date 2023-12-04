@@ -43,12 +43,29 @@ public class CustomerDAO {
 
 
                 //Create a customer object and add it to the list
-                Customer customer = new Customer(id, name, address, postalCode, phone, divisionId, divisionName, country);
+                Customer customer = new Customer(id, name, address, postalCode, phone, divisionId);
                 customerObservableList.add(customer);
             }
         } catch (SQLException e) {
             System.out.println("Error: " + e.getMessage());
         }
         return customerObservableList;
+    }
+
+    public static void addCustomer(Customer customer) throws SQLException {
+        String query = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, customer.getName());
+            pstmt.setString(2, customer.getAddress());
+            pstmt.setString(3, customer.getPostalCode());
+            pstmt.setString(4, customer.getPhone());
+            pstmt.setInt(5, customer.getDivisionId());
+
+            pstmt.executeUpdate();
+        }
+
     }
 }

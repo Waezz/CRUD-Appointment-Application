@@ -7,20 +7,23 @@ public class Customer {
     private String postalCode;
     private String phone;
     private int divisionId;
+
+
+    private String country;
     private String divisionName;
-    private String country; //Derived from Division_Id
+
+
 
     //Constructor
 
-    public Customer(int id, String name, String address, String postalCode, String phone, int divisionId, String divisionName, String country) {
+    public Customer(int id, String name, String address, String postalCode, String phone, int divisionId) {
         this.id = id;
         this.name = name;
         this.address = address;
         this.postalCode = postalCode;
         this.phone = phone;
         this.divisionId = divisionId;
-        this.divisionName = divisionName;
-        this.country = country;
+
 
     }
 
@@ -72,6 +75,14 @@ public class Customer {
         this.divisionId = divisionId;
     }
 
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
     public String getDivisionName() {
         return divisionName;
     }
@@ -80,12 +91,6 @@ public class Customer {
         this.divisionName = divisionName;
     }
 
-    public String getCountry() {
-        return country;
-    }
 
-    public void setCountry(String country) {
-        this.country = country;
-    }
 
 }
