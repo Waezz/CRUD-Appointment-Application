@@ -3,6 +3,7 @@ package controller;
 import DAO.CountryDAO;
 import DAO.CustomerDAO;
 import Utilities.DivisionUtil;
+import Utilities.UserInterfaceUtil;
 import javafx.collections.ObservableArrayBase;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -53,6 +54,9 @@ public class AddCustomerController implements Initializable {
     @FXML
     void onActionCustSave(ActionEvent event) {
 
+        // ISSUE WITH HITTING SAVE ON EMPTY FIELDS AND HAVING CUSTOMER_ID AUTO INCREMENT
+        // WITHOUT A CUSTOMER BEING ADDED
+
             String name = custNameTxt.getText();
             String address = custAddressTxt.getText();
             String postalCode = custPostalTxt.getText();
@@ -66,23 +70,24 @@ public class AddCustomerController implements Initializable {
 
             try {
                 CustomerDAO.addCustomer(newCustomer);
-                showAlert("The new Customer has been successfully added.", "Customer Added", Alert.AlertType.CONFIRMATION);
-            } catch (SQLException e) {
+                UserInterfaceUtil.displayAlert("The new Customer has been successfully added.", "Customer Added", Alert.AlertType.CONFIRMATION);
+                returnToMain(event);
+            } catch (SQLException  | IOException e) {
                 e.printStackTrace();
-                showAlert("An error has occurred while adding the customer: " + e.getMessage(), "Error", Alert.AlertType.ERROR);
+                UserInterfaceUtil.displayAlert("An error has occurred while adding the customer. " + "Please ensure all fields are filled and valid.", "Error", Alert.AlertType.ERROR);
             }
 
 
     }
 
-    public static void showAlert(String content, String title, Alert.AlertType type) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setGraphic(null); //Remove ugly icon
-        alert.setContentText(content);
-        alert.showAndWait();
+    private void returnToMain(ActionEvent event) throws IOException {
+        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/view/appointment-view.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
+
     }
+
 
     /**
      * Navigates back to the Customers screen when triggered.
