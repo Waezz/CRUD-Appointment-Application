@@ -3,6 +3,7 @@ package controller;
 import DAO.CustomerDAO;
 import Utilities.CountryDivision;
 import Utilities.DivisionUtil;
+import Utilities.UserInterfaceUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -111,10 +112,23 @@ public class CustomerController implements Initializable {
      */
     @FXML
     void onActionUpdateCust(ActionEvent event) throws IOException {
-        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/view/updateCustomer-view.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.show();
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedCustomer == null) {
+            UserInterfaceUtil.displayAlert("No Customer Selected", "Please select a customer to update.", Alert.AlertType.ERROR);
+        } else {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/view/updateCustomer-view.fxml"));
+            Parent updateCustomerParent = loader.load();
+
+            UpdateCustomerController controller = loader.getController();
+            controller.initializeCustomerData(selectedCustomer);
+
+            stage = (Stage)((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(updateCustomerParent));
+            stage.show();
+
+        }
 
     }
 

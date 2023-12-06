@@ -66,6 +66,24 @@ public class CustomerDAO {
 
             pstmt.executeUpdate();
         }
+    }
+
+    public static void updateCustomer (Customer customer) throws SQLException {
+        String query = "UPDATE customers SET Customer_Name = ?, Address = ?, Postal_Code = ?, Phone = ?, Division_ID = ? WHERE Customer_ID = ?";
+
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, customer.getName());
+            pstmt.setString(2, customer.getAddress());
+            pstmt.setString(3, customer.getPostalCode());
+            pstmt.setString(4, customer.getPhone());
+            pstmt.setInt(5, customer.getDivisionId());
+            pstmt.setInt(6, customer.getId());
+
+            pstmt.executeUpdate();
+
+        }
 
     }
 }

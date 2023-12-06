@@ -2,6 +2,7 @@ package controller;
 
 import DAO.CountryDAO;
 import DAO.CustomerDAO;
+import DAO.UserDAO;
 import Utilities.DivisionUtil;
 import Utilities.UserInterfaceUtil;
 import javafx.collections.ObservableArrayBase;
@@ -62,6 +63,13 @@ public class AddCustomerController implements Initializable {
             String postalCode = custPostalTxt.getText();
             String phone = custPhoneTxt.getText();
             String divisionName = custStateBox.getValue();
+
+            //Validation: Check if any fields are empty
+            if (name.isEmpty() || address.isEmpty() || postalCode.isEmpty() || phone.isEmpty() || divisionName == null) {
+                UserInterfaceUtil.displayAlert("Please ensure all fields are filled.", "Missing Information", Alert.AlertType.WARNING );
+                return; //Exit without adding a customer
+            }
+
 
             // Convert division name to division ID
             int divisionId = DivisionUtil.getDivisionIdByDivisionName(divisionName);
