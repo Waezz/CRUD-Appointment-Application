@@ -11,17 +11,17 @@
                 <Font size="20.0" />
             </font>
         </Label>
-        <AnchorPane layoutX="38.0" layoutY="61.0" prefHeight="350.0" prefWidth="300.0" style="-fx-border-color: grey; -fx-border-radius: 20;">
+        <AnchorPane layoutX="38.0" layoutY="65.0" prefHeight="350.0" prefWidth="300.0" style="-fx-border-color: grey; -fx-border-radius: 20;">
             <children>
-                <Label fx:id="userNameLabel" layoutX="40.0" layoutY="67.0" text="UserName" />
-                <Label fx:id="passwordLabel" layoutX="42.0" layoutY="106.0" text="Password" />
+                <Label fx:id="userNameLabel" layoutX="15.0" layoutY="67.0" text="UserName" />
+                <Label fx:id="passwordLabel" layoutX="15.0" layoutY="106.0" text="Password" />
                 <Label fx:id="languageLabel" layoutX="54.0" layoutY="251.0" text="Language" />
                 <Label fx:id="zoneLabel" layoutX="52.0" layoutY="290.0" text="Time Zone" />
-                <TextField fx:id="userNameTxt" layoutX="109.0" layoutY="63.0" />
-                <TextField fx:id="passWordTxt" layoutX="109.0" layoutY="102.0" />
-                <Button fx:id="loginBtnLabel" layoutX="148.0" layoutY="149.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#loginBtnPressed" prefWidth="50.0" text="Login" />
+                <TextField fx:id="userNameTxt" layoutX="114.0" layoutY="63.0" />
+                <TextField fx:id="passWordTxt" layoutX="114.0" layoutY="102.0" />
+                <Button fx:id="loginBtnLabel" layoutX="69.0" layoutY="150.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#loginBtnPressed" prefWidth="75.0" text="Login" />
                 <Label fx:id="userLocationLabel" layoutX="136.0" layoutY="290.0" text="USA / Denver" />
-                <Button fx:id="exitBtnLabel" layoutX="210.0" layoutY="149.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#exitBtnPressed" prefWidth="50.0" text="Exit" />
+                <Button fx:id="exitBtnLabel" layoutX="171.0" layoutY="150.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#exitBtnPressed" prefWidth="75.0" text="Exit" />
             <Label fx:id="userLanguageLabel" layoutX="136.0" layoutY="251.0" text="English" />
             </children>
         </AnchorPane>

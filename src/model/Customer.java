@@ -8,11 +8,8 @@ public class Customer {
     private String phone;
     private int divisionId;
 
-
     private String country;
     private String divisionName;
-
-
 
     //Constructor
 
@@ -23,7 +20,6 @@ public class Customer {
         this.postalCode = postalCode;
         this.phone = phone;
         this.divisionId = divisionId;
-
 
     }
 
