@@ -52,6 +52,21 @@ public class CustomerDAO {
         return customerObservableList;
     }
 
+    public static ObservableList<Integer> getAllCustomerIDs() throws SQLException {
+        String query = "SELECT Customer_ID FROM customers ORDER BY Customer_ID ASC";
+        ObservableList<Integer> customerIds = FXCollections.observableArrayList();
+
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                int id =rs.getInt("Customer_ID");
+                customerIds.add(id);
+            }
+        } return customerIds;
+    }
+
     public static void addCustomer(Customer customer) throws SQLException {
         String query = "INSERT INTO customers (Customer_Name, Address, Postal_Code, Phone, Division_ID) VALUES (?, ?, ?, ?, ?)";
 
