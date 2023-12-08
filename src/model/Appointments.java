@@ -1,6 +1,8 @@
 package model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 
 /**
@@ -111,8 +113,23 @@ public class Appointments {
         return contactId;
     }
 
-    public void setContactId(int contactId) {
-        this.contactId = contactId;
+    public void setContactId(int contactId) {this.contactId = contactId; }
+
+    public LocalDate getStartDate() {
+        return start != null ? start.toLocalDate() : null;
     }
+    public LocalTime getStartTime() {
+        return start != null ? start.toLocalTime() : null;
+    }
+
+    public LocalDate getEndDate() {
+        return end != null ? end.toLocalDate() : null;
+    }
+
+    public LocalTime getEndTime() {
+        return end != null ? end.toLocalTime() : null;
+    }
+
+
 
 }

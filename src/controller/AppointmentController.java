@@ -1,17 +1,28 @@
 package controller;
 
+import DAO.AppointmentDAO;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import model.Appointments;
 
 import java.io.IOException;
+import java.net.URL;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ResourceBundle;
 
-public class AppointmentController {
+public class AppointmentController implements Initializable {
 
     Stage stage;
     Parent scene;
@@ -20,43 +31,43 @@ public class AppointmentController {
     private TextField appointmentSearchTxt;
 
     @FXML
-    private TableView<?> appointmentTableView;
+    private TableView<Appointments> appointmentTableView;
 
     @FXML
-    private TableColumn<?, ?> apptContactColumn;
+    private TableColumn<Appointments, Integer> apptContactColumn;
 
     @FXML
-    private TableColumn<?, ?> apptCustomerIdColumn;
+    private TableColumn<Appointments, Integer> apptCustomerIdColumn;
 
     @FXML
-    private TableColumn<?, ?> apptDescriptionColumn;
+    private TableColumn<Appointments, String> apptDescriptionColumn;
 
     @FXML
-    private TableColumn<?, ?> apptEndDateColumn;
+    private TableColumn<Appointments, LocalDate> apptEndDateColumn;
 
     @FXML
-    private TableColumn<?, ?> apptEndTimeColumn;
+    private TableColumn<Appointments, LocalTime> apptEndTimeColumn;
 
     @FXML
-    private TableColumn<?, ?> apptIdColumn;
+    private TableColumn<Appointments, Integer> apptIdColumn;
 
     @FXML
-    private TableColumn<?, ?> apptLocationColumn;
+    private TableColumn<Appointments, String> apptLocationColumn;
 
     @FXML
-    private TableColumn<?, ?> apptStartDateColumn;
+    private TableColumn<Appointments, LocalDate> apptStartDateColumn;
 
     @FXML
-    private TableColumn<?, ?> apptStartTimeColumn;
+    private TableColumn<Appointments, LocalTime> apptStartTimeColumn;
 
     @FXML
-    private TableColumn<?, ?> apptTitleColumn;
+    private TableColumn<Appointments, String> apptTitleColumn;
 
     @FXML
-    private TableColumn<?, ?> apptTypeColumn;
+    private TableColumn<Appointments, String> apptTypeColumn;
 
     @FXML
-    private TableColumn<?, ?> apptUserIdColumn;
+    private TableColumn<Appointments, Integer> apptUserIdColumn;
 
     @FXML
     private Label localTimeZone;
@@ -165,4 +176,30 @@ public class AppointmentController {
 
     }
 
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        apptIdColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+        apptTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        apptDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+        apptLocationColumn.setCellValueFactory(new PropertyValueFactory<>("location"));
+        apptTypeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+        apptStartTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+        apptStartDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+        apptEndTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+        apptEndDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+        apptCustomerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
+        apptUserIdColumn.setCellValueFactory(new PropertyValueFactory<>("userId"));
+        apptContactColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
+
+        loadAppointmentData();
+    }
+
+    private void loadAppointmentData() {
+        try {
+            ObservableList<Appointments> appointmentData = AppointmentDAO.getAllAppointments();
+            appointmentTableView.setItems(appointmentData);
+        } catch (SQLException e ) {
+            e.printStackTrace();
+        }
+    }
 }

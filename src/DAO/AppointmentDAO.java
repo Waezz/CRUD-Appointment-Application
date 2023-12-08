@@ -7,7 +7,7 @@ import model.Appointments;
 
 import java.sql.*;
 import java.time.LocalDateTime;
-/**
+
 public class AppointmentDAO {
 
     public static ObservableList<Appointments> getAllAppointments() throws SQLException {
@@ -33,9 +33,12 @@ public class AppointmentDAO {
                 int userId = rs.getInt("User_ID");
                 int contactId = rs.getInt("Contact_ID");
 
-                Appointments appointments = new Appointments( )
+                Appointments appointments = new Appointments(appointmentId, title, description, location, type, start, end, customerId, userId, contactId );
+                appointmentsObservableList.add(appointments);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return appointmentsObservableList;
     }
 }
-**/
