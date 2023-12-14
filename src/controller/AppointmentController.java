@@ -17,10 +17,12 @@ import model.Appointments;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.SQLWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoField;
 import java.util.ResourceBundle;
 
 public class AppointmentController implements Initializable {
@@ -194,6 +196,10 @@ public class AppointmentController implements Initializable {
 
         loadAppointmentData();
         updateLocationLabel();
+
+        viewMonthRadioBtn.setOnAction(event -> filterAppointmentsByMonth());
+        viewWeekRadioBtn.setOnAction(event -> filterAppointmentsByWeek());
+        viewAllRadioBtn.setOnAction(event -> loadAppointmentData());
     }
 
     private void loadAppointmentData() {
@@ -211,5 +217,29 @@ public class AppointmentController implements Initializable {
     private void updateLocationLabel() {
         ZoneId zoneId = ZoneId.systemDefault();
         localTimeZone.setText(zoneId.toString());
+    }
+
+    private void filterAppointmentsByMonth() {
+        LocalDate now = LocalDate.now();
+        LocalDate startOfMonth = now.withDayOfMonth(1);
+        LocalDate endOfMonth = now.withDayOfMonth(now.lengthOfMonth());
+        updateAppointmentTableView(startOfMonth, endOfMonth);
+    }
+
+    private void filterAppointmentsByWeek() {
+        LocalDate now = LocalDate.now();
+        LocalDate startOfWeek = now.with(ChronoField.DAY_OF_WEEK, 1);
+        LocalDate endOfWeek = now.with(ChronoField.DAY_OF_WEEK, 7);
+        updateAppointmentTableView(startOfWeek, endOfWeek);
+    }
+
+    private void updateAppointmentTableView(LocalDate start, LocalDate end) {
+        try {
+            ObservableList<Appointments> filteredAppointments = AppointmentDAO.getAppointmentsByDateRange(start, end);
+            appointmentTableView.setItems(filteredAppointments);
+        }  catch (SQLException e) {
+            e.printStackTrace();
+
+        }
     }
 }

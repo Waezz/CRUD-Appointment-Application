@@ -97,10 +97,10 @@ public class AddAppointmentController implements Initializable {
             if (TimeUtil.isValidBuisnessHour(start) && TimeUtil.isValidBuisnessHour(end)) {
                 Appointments newAppointment = new Appointments(0, title, description, location, type, start, end, customerId, userId, contactId);
                 AppointmentDAO.addAppointment(newAppointment);
-                UserInterfaceUtil.displayAlert("The new Customer has been successfully added.", "Customer Added", Alert.AlertType.CONFIRMATION);
+                UserInterfaceUtil.displayAlert("The new Appointment has been successfully added.", "Appointment Added", Alert.AlertType.INFORMATION);
                 returnToMain(event);
             } else {
-                UserInterfaceUtil.displayAlert("Appointment times must be within business hours. Business hours are 8:00am - 10:00pm Eastern Time.", "Invalid Time", Alert.AlertType.ERROR);
+                UserInterfaceUtil.displayAlert("Appointment times must be within business hours. Business hours are between 8:00am - 10:00pm Eastern Time.", "Invalid Time", Alert.AlertType.ERROR);
             }
         } catch (Exception e) {
             UserInterfaceUtil.displayAlert("Error saving the appointment.", "Please ensure all fields are correctly filled.", Alert.AlertType.ERROR);

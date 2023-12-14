@@ -76,7 +76,7 @@ public class AddCustomerController implements Initializable {
 
             try {
                 CustomerDAO.addCustomer(newCustomer);
-                UserInterfaceUtil.displayAlert("The new Customer has been successfully added.", "Customer Added", Alert.AlertType.CONFIRMATION);
+                UserInterfaceUtil.displayAlert("The new Customer has been successfully added.", "Customer Added", Alert.AlertType.INFORMATION);
                 returnToMain(event);
             } catch (SQLException  | IOException e) {
                 e.printStackTrace();

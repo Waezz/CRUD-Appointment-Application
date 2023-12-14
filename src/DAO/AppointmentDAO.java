@@ -6,6 +6,7 @@ import javafx.collections.ObservableList;
 import model.Appointments;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AppointmentDAO {
@@ -61,5 +62,47 @@ public class AppointmentDAO {
             pstmt.executeUpdate();
 
         }
+    }
+
+    // Method to get appointments by Month
+    public static ObservableList<Appointments> getAppointmentsByMonth(LocalDate startOfMonth, LocalDate endOfMonth) throws SQLException {
+        return getAppointmentsByDateRange(startOfMonth, endOfMonth);
+    }
+
+    // Method to get appointments by Week
+    public static ObservableList<Appointments> getAppointmentsByWeek(LocalDate startOfWeek, LocalDate endOfWeek) throws SQLException {
+        return getAppointmentsByDateRange(startOfWeek, endOfWeek);
+    }
+
+    public static ObservableList<Appointments> getAppointmentsByDateRange(LocalDate start, LocalDate end) throws SQLException {
+        String query = "SELECT Appointment_ID, Title, Description, Location, Type, Start, " +
+                "End, Customer_ID, User_ID, Contact_ID FROM APPOINTMENTS WHERE DATE(Start) BETWEEN ? AND ?";
+
+        ObservableList<Appointments> filteredAppointments = FXCollections.observableArrayList();
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)){
+
+            pstmt.setDate(1, java.sql.Date.valueOf(start));
+            pstmt.setDate(2, java.sql.Date.valueOf(end));
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+
+                int appointmentId = rs.getInt("Appointment_ID");
+                String title = rs.getString("Title");
+                String description = rs.getString("Description");
+                String location = rs.getString("Location");
+                String type = rs.getString("Location");
+                LocalDateTime startDateTime = rs.getTimestamp("Start").toLocalDateTime();
+                LocalDateTime endDateTime = rs.getTimestamp("End").toLocalDateTime();
+                int customerId = rs.getInt("Customer_ID");
+                int userId = rs.getInt("User_ID");
+                int contactId = rs.getInt("Contact_ID");
+
+                Appointments appointments = new Appointments(appointmentId, title, description, location, type, startDateTime, endDateTime, customerId, userId, contactId);
+                filteredAppointments.add(appointments);
+            }
+        }
+        return filteredAppointments;
     }
 }
