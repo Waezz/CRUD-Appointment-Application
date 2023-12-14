@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.ResourceBundle;
 
 public class AppointmentController implements Initializable {
@@ -192,6 +193,7 @@ public class AppointmentController implements Initializable {
         apptContactColumn.setCellValueFactory(new PropertyValueFactory<>("contactId"));
 
         loadAppointmentData();
+        updateLocationLabel();
     }
 
     private void loadAppointmentData() {
@@ -201,5 +203,13 @@ public class AppointmentController implements Initializable {
         } catch (SQLException e ) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Obtains the current time zone from the systems default and changes the label.
+     */
+    private void updateLocationLabel() {
+        ZoneId zoneId = ZoneId.systemDefault();
+        localTimeZone.setText(zoneId.toString());
     }
 }

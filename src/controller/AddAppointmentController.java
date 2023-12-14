@@ -1,7 +1,12 @@
 package controller;
 
 import DAO.CustomerDAO;
+import DAO.AppointmentDAO;
 import Utilities.UserInterfaceUtil;
+import Utilities.TimeUtil;
+
+import java.net.UnknownServiceException;
+import java.time.LocalDateTime;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,10 +17,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.Appointments;
 
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
 
@@ -63,6 +70,49 @@ public class AddAppointmentController implements Initializable {
     @FXML
     void onActionApptSave(ActionEvent event) {
 
+        String title = apptTitleTxt.getText();
+        String description = apptDescTxt.getText();
+        String location = apptLocTxt.getText();
+        String type = apptTypeTxt.getText();
+        Integer userId = apptUserBox.getValue();
+        Integer customerId = apptCustBox.getValue();
+        Integer contactId = apptContBox.getValue();
+
+        if (title.isEmpty() || description.isEmpty() || location.isEmpty() || type.isEmpty() || userId == null || customerId == null
+            || contactId == null) {
+            UserInterfaceUtil.displayAlert("Please ensure all fields are filled.", "Missing Information", Alert.AlertType.WARNING );
+            return; //Exit without adding an appointment
+        }
+        try {
+            LocalDate startDate = apptStartDate.getValue();
+            LocalTime startTime = apptStartTIme.getValue();
+            LocalDate endDate = apptEndDate.getValue();
+            LocalTime endTime = apptEndTime.getValue();
+
+            // Combine date and time into LocalDateTime Objects
+            LocalDateTime start = LocalDateTime.of(startDate, startTime);
+            LocalDateTime end = LocalDateTime.of(endDate, endTime);
+
+            // Validate both start and end times
+            if (TimeUtil.isValidBuisnessHour(start) && TimeUtil.isValidBuisnessHour(end)) {
+                Appointments newAppointment = new Appointments(0, title, description, location, type, start, end, customerId, userId, contactId);
+                AppointmentDAO.addAppointment(newAppointment);
+                UserInterfaceUtil.displayAlert("The new Customer has been successfully added.", "Customer Added", Alert.AlertType.CONFIRMATION);
+                returnToMain(event);
+            } else {
+                UserInterfaceUtil.displayAlert("Appointment times must be within business hours. Business hours are 8:00am - 10:00pm Eastern Time.", "Invalid Time", Alert.AlertType.ERROR);
+            }
+        } catch (Exception e) {
+            UserInterfaceUtil.displayAlert("Error saving the appointment.", "Please ensure all fields are correctly filled.", Alert.AlertType.ERROR);
+        }
+
+    }
+
+    private void returnToMain(ActionEvent event) throws IOException {
+        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/view/appointment-view.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
     }
 
     /**
@@ -72,16 +122,13 @@ public class AddAppointmentController implements Initializable {
      */
     @FXML
     void onActionMenuReturn(ActionEvent event) throws IOException {
-        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/view/appointment-view.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.show();
+        returnToMain(event);
 
     }
 
     private void populateTimeBoxes() {
-        LocalTime startTime = LocalTime.of(8,0); // Start at 8am
-        LocalTime endTime = LocalTime.of(21,30); // End at 10pm
+        LocalTime startTime = LocalTime.of(0,0);
+        LocalTime endTime = LocalTime.of(23,00);
 
         while (startTime.isBefore(endTime.plusSeconds(1))) {
             apptStartTIme.getItems().add(startTime);

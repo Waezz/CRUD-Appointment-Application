@@ -11,13 +11,13 @@ import java.time.LocalDateTime;
 public class AppointmentDAO {
 
     public static ObservableList<Appointments> getAllAppointments() throws SQLException {
-        String query ="SELECT Appointment_ID, Title, Description, Location, Type, Start, " +
-                      "End, Customer_ID, User_ID, Contact_ID FROM APPOINTMENTS";
+        String query = "SELECT Appointment_ID, Title, Description, Location, Type, Start, " +
+                "End, Customer_ID, User_ID, Contact_ID FROM APPOINTMENTS";
 
         ObservableList<Appointments> appointmentsObservableList = FXCollections.observableArrayList();
 
         try (PreparedStatement pstmt = JDBC.connection.prepareStatement(query);
-             ResultSet rs =pstmt.executeQuery()) {
+             ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 int appointmentId = rs.getInt("Appointment_ID");
@@ -26,19 +26,40 @@ public class AppointmentDAO {
                 String location = rs.getString("Location");
                 String type = rs.getString("Type");
                 Timestamp startTimeStamp = rs.getTimestamp("Start");
-                LocalDateTime start = startTimeStamp !=null ? startTimeStamp.toLocalDateTime() : null;
+                LocalDateTime start = startTimeStamp != null ? startTimeStamp.toLocalDateTime() : null;
                 Timestamp endTimeStamp = rs.getTimestamp("End");
-                LocalDateTime end = endTimeStamp !=null ? endTimeStamp.toLocalDateTime() : null;
+                LocalDateTime end = endTimeStamp != null ? endTimeStamp.toLocalDateTime() : null;
                 int customerId = rs.getInt("Customer_ID");
                 int userId = rs.getInt("User_ID");
                 int contactId = rs.getInt("Contact_ID");
 
-                Appointments appointments = new Appointments(appointmentId, title, description, location, type, start, end, customerId, userId, contactId );
+                Appointments appointments = new Appointments(appointmentId, title, description, location, type, start, end, customerId, userId, contactId);
                 appointmentsObservableList.add(appointments);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return appointmentsObservableList;
+    }
+
+    public static void addAppointment(Appointments appointments) throws SQLException {
+        String query = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, appointments.getTitle());
+            pstmt.setString(2, appointments.getDescription());
+            pstmt.setString(3, appointments.getLocation());
+            pstmt.setString(4, appointments.getType());
+            pstmt.setTimestamp(5, Timestamp.valueOf(appointments.getStart()));
+            pstmt.setTimestamp(6, Timestamp.valueOf(appointments.getEnd()));
+            pstmt.setInt(7, appointments.getCustomerId());
+            pstmt.setInt(8, appointments.getUserId());
+            pstmt.setInt(9, appointments.getContactId());
+
+            pstmt.executeUpdate();
+
+        }
     }
 }

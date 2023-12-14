@@ -55,8 +55,6 @@ public class AddCustomerController implements Initializable {
     @FXML
     void onActionCustSave(ActionEvent event) {
 
-        // ISSUE WITH HITTING SAVE ON EMPTY FIELDS AND HAVING CUSTOMER_ID AUTO INCREMENT
-        // WITHOUT A CUSTOMER BEING ADDED
 
             String name = custNameTxt.getText();
             String address = custAddressTxt.getText();
@@ -93,7 +91,6 @@ public class AddCustomerController implements Initializable {
         scene = FXMLLoader.load(getClass().getResource("/view/appointment-view.fxml"));
         stage.setScene(new Scene(scene));
         stage.show();
-
     }
 
 
