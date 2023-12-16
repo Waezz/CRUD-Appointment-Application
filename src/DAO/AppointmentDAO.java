@@ -74,6 +74,7 @@ public class AppointmentDAO {
         return getAppointmentsByDateRange(startOfWeek, endOfWeek);
     }
 
+    // Method to get appointments by date range
     public static ObservableList<Appointments> getAppointmentsByDateRange(LocalDate start, LocalDate end) throws SQLException {
         String query = "SELECT Appointment_ID, Title, Description, Location, Type, Start, " +
                 "End, Customer_ID, User_ID, Contact_ID FROM APPOINTMENTS WHERE DATE(Start) BETWEEN ? AND ?";
@@ -104,5 +105,16 @@ public class AppointmentDAO {
             }
         }
         return filteredAppointments;
+    }
+
+    public static void deleteAppointment(int appointmentId) throws SQLException {
+        String query = "DELETE FROM appointments WHERE Appointment_ID = ?";
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt( 1, appointmentId);
+            pstmt.executeUpdate();
+        }
+
     }
 }

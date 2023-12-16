@@ -24,6 +24,7 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class AddAppointmentController implements Initializable {
@@ -83,6 +84,7 @@ public class AddAppointmentController implements Initializable {
             UserInterfaceUtil.displayAlert("Please ensure all fields are filled.", "Missing Information", Alert.AlertType.WARNING );
             return; //Exit without adding an appointment
         }
+
         try {
             LocalDate startDate = apptStartDate.getValue();
             LocalTime startTime = apptStartTIme.getValue();
@@ -92,6 +94,18 @@ public class AddAppointmentController implements Initializable {
             // Combine date and time into LocalDateTime Objects
             LocalDateTime start = LocalDateTime.of(startDate, startTime);
             LocalDateTime end = LocalDateTime.of(endDate, endTime);
+
+            // Check if the start time is before the end time
+            if (start.isAfter(end)) {
+                UserInterfaceUtil.displayAlert("Your Appointment start time must be before the end time.", "Invalid Time", Alert.AlertType.ERROR);
+                return; // Exit without adding an appointment
+            }
+
+            // Check if the appointment is set in the past
+            if (start.isBefore(LocalDateTime.now())) {
+                UserInterfaceUtil.displayAlert("You cannot schedule an Appointment in the past.", "Invalid Date", Alert.AlertType.ERROR);
+                return; // Exit
+            }
 
             // Validate both start and end times
             if (TimeUtil.isValidBuisnessHour(start) && TimeUtil.isValidBuisnessHour(end)) {

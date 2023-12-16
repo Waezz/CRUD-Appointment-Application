@@ -1,6 +1,7 @@
 package controller;
 
 import DAO.AppointmentDAO;
+import Utilities.UserInterfaceUtil;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -106,6 +107,32 @@ public class AppointmentController implements Initializable {
 
     @FXML
     void onActionDeleteAppt(ActionEvent event) {
+        Appointments selectedAppointment = appointmentTableView.getSelectionModel().getSelectedItem();
+        if (selectedAppointment == null) {
+            UserInterfaceUtil.displayAlert("No appointment selected.", "Please select an appointment to delete.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // Confirm the appt ID and type before deletion
+        int appointmentId = selectedAppointment.getAppointmentId();
+        String appointmentType = selectedAppointment.getType();
+
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to delete this appointment? \n\nAppointment ID = " + appointmentId + "\nAppointment Type = " + appointmentType,
+                ButtonType.YES, ButtonType.NO);
+        confirmationAlert.setGraphic(null); // get rid of ugly logo
+        confirmationAlert.showAndWait();
+
+        if (confirmationAlert.getResult() == ButtonType.YES) {
+            try {
+                AppointmentDAO.deleteAppointment(selectedAppointment.getAppointmentId());
+                appointmentTableView.getItems().remove(selectedAppointment);
+                UserInterfaceUtil.displayAlert("Appointment deleted successfully.", "Deleted", Alert.AlertType.INFORMATION);
+            } catch (SQLException e) {
+                e.printStackTrace();
+                UserInterfaceUtil.displayAlert("Error occurred while deleting appointment!", "Error", Alert.AlertType.ERROR);
+            }
+        }
 
     }
 
