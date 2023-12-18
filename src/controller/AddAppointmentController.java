@@ -176,7 +176,7 @@ public class AddAppointmentController implements Initializable {
 
 
 
-        // Populate Customer ChoiceBox with current IDS
+        // Populate Customer ChoiceBox with current customers
         try {
             ObservableList<Integer> customerIds = CustomerDAO.getAllCustomerIDs();
             apptCustBox.setItems(customerIds);

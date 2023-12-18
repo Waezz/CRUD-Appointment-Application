@@ -156,9 +156,20 @@ public class AppointmentController implements Initializable {
      */
     @FXML
     void onActionModifyAppt(ActionEvent event) throws IOException {
-        stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/view/updateAppointment-view.fxml"));
-        stage.setScene(new Scene(scene));
+        Appointments selectedAppointment = appointmentTableView.getSelectionModel().getSelectedItem();
+        if (selectedAppointment == null) {
+            UserInterfaceUtil.displayAlert("No appointment selected", "Please select an appointment to update.", Alert.AlertType.ERROR);
+            return;
+        }
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/updateAppointment-view.fxml"));
+        Parent updateAppointmentView = loader.load();
+
+        UpdateAppointmentController updateAppointmentController = loader.getController();
+        updateAppointmentController.initializeAppointmentData(selectedAppointment);
+
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        stage.setScene(new Scene(updateAppointmentView));
         stage.show();
 
     }

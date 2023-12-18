@@ -1,6 +1,8 @@
 package DAO;
 
 import Utilities.JDBC;
+import com.mysql.cj.jdbc.exceptions.ConnectionFeatureNotAvailableException;
+import com.mysql.cj.result.ZonedDateTimeValueFactory;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Appointments;
@@ -8,6 +10,8 @@ import model.Appointments;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 public class AppointmentDAO {
 
@@ -26,15 +30,22 @@ public class AppointmentDAO {
                 String description = rs.getString("Description");
                 String location = rs.getString("Location");
                 String type = rs.getString("Type");
-                Timestamp startTimeStamp = rs.getTimestamp("Start");
-                LocalDateTime start = startTimeStamp != null ? startTimeStamp.toLocalDateTime() : null;
-                Timestamp endTimeStamp = rs.getTimestamp("End");
-                LocalDateTime end = endTimeStamp != null ? endTimeStamp.toLocalDateTime() : null;
                 int customerId = rs.getInt("Customer_ID");
                 int userId = rs.getInt("User_ID");
                 int contactId = rs.getInt("Contact_ID");
 
-                Appointments appointments = new Appointments(appointmentId, title, description, location, type, start, end, customerId, userId, contactId);
+                Timestamp startUTC = rs.getTimestamp("Start");
+                Timestamp endUTC = rs.getTimestamp("End");
+
+                LocalDateTime startLocal = startUTC.toLocalDateTime();
+                LocalDateTime endLocal = endUTC.toLocalDateTime();
+
+                System.out.println("Fetched appt: " + appointmentId + "  Start UTC- " + startUTC);
+                System.out.println("Fetched appt: " + appointmentId + "  End UTC- " + endUTC);
+                System.out.println("Fetched appt: " + appointmentId + "  Start Local- " + startLocal);
+                System.out.println("Fetched appt: " + appointmentId + "  End Local- " + endLocal);
+
+                Appointments appointments = new Appointments(appointmentId, title, description, location, type, startLocal, endLocal, customerId, userId, contactId);
                 appointmentsObservableList.add(appointments);
             }
         } catch (SQLException e) {
@@ -58,6 +69,28 @@ public class AppointmentDAO {
             pstmt.setInt(7, appointments.getCustomerId());
             pstmt.setInt(8, appointments.getUserId());
             pstmt.setInt(9, appointments.getContactId());
+
+            pstmt.executeUpdate();
+
+        }
+    }
+
+    public static void updateAppointment(Appointments appointments) throws SQLException {
+        String query = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?";
+
+        try (Connection conn = JDBC.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, appointments.getTitle());
+            pstmt.setString(2, appointments.getDescription());
+            pstmt.setString(3, appointments.getLocation());
+            pstmt.setString(4, appointments.getType());
+            pstmt.setTimestamp(5, Timestamp.valueOf(appointments.getStart()));
+            pstmt.setTimestamp(6, Timestamp.valueOf(appointments.getEnd()));
+            pstmt.setInt(7, appointments.getCustomerId());
+            pstmt.setInt(8, appointments.getUserId());
+            pstmt.setInt(9, appointments.getContactId());
+            pstmt.setInt(10, appointments.getAppointmentId());
 
             pstmt.executeUpdate();
 
