@@ -29,6 +29,9 @@ public class UpdateAppointmentController implements Initializable {
     Stage stage;
     Parent scene;
 
+
+    private int updatingAppointmentId; //Field to store the appointment
+
     private Appointments selectedAppointment;
 
     @FXML
@@ -67,6 +70,21 @@ public class UpdateAppointmentController implements Initializable {
     @FXML
     private ChoiceBox<Integer> apptUserBox;
 
+    private boolean isAppointmentOverlapping(int appointmentIdToExclude, int customerId, LocalDateTime start, LocalDateTime end) {
+        try {
+            ObservableList<Appointments> existingAppointments = AppointmentDAO.getAppointmentsByCustomer(customerId);
+            for (Appointments existingAppointment : existingAppointments) {
+                if (existingAppointment.getAppointmentId()  != appointmentIdToExclude &&
+                    start.isBefore(existingAppointment.getEnd()) && end.isAfter(existingAppointment.getStart())) {
+                    return true; //Overlap found
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; //No Overlap found
+    }
+
     @FXML
     void onActionApptSave(ActionEvent event) {
         try {
@@ -104,6 +122,12 @@ public class UpdateAppointmentController implements Initializable {
                 return; // Exit
             }
 
+            //Overlap check
+            if (isAppointmentOverlapping(updatingAppointmentId, customerId, start, end)) {
+                UserInterfaceUtil.displayAlert("Appointment times overlap with another appointment.", "Overlap Error", Alert.AlertType.ERROR);
+                return;
+            }
+
             // Validate both start and end times
             if (TimeUtil.isValidBuisnessHour(start) && TimeUtil.isValidBuisnessHour(end)) {
                 Appointments updatedAppointment = new Appointments(selectedAppointment.getAppointmentId(), title, description, location, type, start, end, customerId, userId, contactId);
@@ -139,6 +163,7 @@ public class UpdateAppointmentController implements Initializable {
     }
 
     public void initializeAppointmentData(Appointments appointments) {
+        updatingAppointmentId = appointments.getAppointmentId();
         this.selectedAppointment = appointments;
 
         apptIdTxt.setText(String.valueOf(appointments.getAppointmentId()));
