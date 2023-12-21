@@ -44,9 +44,6 @@ public class AppointmentDAO {
                 LocalDateTime startLocal = startUTC.toLocalDateTime();
                 LocalDateTime endLocal = endUTC.toLocalDateTime();
 
-                System.out.println("Fetched appt: " + appointmentId + "  Start Local- " + startLocal);
-                System.out.println("Fetched appt: " + appointmentId + "  End Local- " + endLocal);
-
                 Appointments appointments = new Appointments(appointmentId, title, description, location, type, startLocal, endLocal, customerId, userId, contactId);
                 appointmentsObservableList.add(appointments);
             }
@@ -323,6 +320,39 @@ public class AppointmentDAO {
             }
         }
         return types;
+    }
+
+    //Method to return all appointments for a given customer
+    public static ObservableList<Appointments> getAppointmentsByCustomer(int customerId) throws SQLException {
+        String query = "SELECT * FROM appointments WHERE Customer_ID = ?";
+        ObservableList<Appointments> appointments = FXCollections.observableArrayList();
+
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, customerId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                int appointmentId = rs.getInt("Appointment_ID");
+                String title = rs.getString("Title");
+                String description = rs.getString("Description");
+                String location = rs.getString("Location");
+                String type = rs.getString("Type");
+                int userId = rs.getInt("User_ID");
+                int contactId = rs.getInt("Contact_ID");
+
+                Timestamp startUTC = rs.getTimestamp("Start");
+                Timestamp endUTC = rs.getTimestamp("End");
+
+                LocalDateTime startLocal = startUTC.toLocalDateTime();
+                LocalDateTime endLocal = endUTC.toLocalDateTime();
+
+                Appointments appointment = new Appointments(appointmentId, title, description, location, type, startLocal, endLocal, customerId, userId, contactId);
+                appointments.add(appointment);
+            }
+        }
+             return appointments;
     }
 
 

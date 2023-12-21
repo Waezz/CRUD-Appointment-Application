@@ -68,6 +68,27 @@ public class AddAppointmentController implements Initializable {
     @FXML
     private ChoiceBox<Integer> apptUserBox;
 
+    /**
+     * This Method takes necessary parameters and return a boolean indicating whether an overlap occurs
+     * @param customerId
+     * @param start
+     * @param end
+     * @return SQL
+     */
+    private boolean isAppointmentOverlapping(int customerId, LocalDateTime start, LocalDateTime end) {
+        try {
+            ObservableList<Appointments> existingAppointments = AppointmentDAO.getAppointmentsByCustomer(customerId);
+            for (Appointments existingAppointment : existingAppointments) {
+                if (start.isBefore(existingAppointment.getEnd()) && end.isAfter(existingAppointment.getStart())) {
+                    return true; //Overlap found
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; //No overlap found
+    }
+
     @FXML
     void onActionApptSave(ActionEvent event) {
 
@@ -94,6 +115,12 @@ public class AddAppointmentController implements Initializable {
             // Combine date and time into LocalDateTime Objects
             LocalDateTime start = LocalDateTime.of(startDate, startTime);
             LocalDateTime end = LocalDateTime.of(endDate, endTime);
+
+            //Overlap check
+            if (isAppointmentOverlapping(customerId, start, end)) {
+                UserInterfaceUtil.displayAlert("Appointment times overlap with another appointment.", "Overlap Error", Alert.AlertType.ERROR);
+                return;
+            }
 
             // Check if the start time is before the end time
             if (start.isAfter(end)) {
