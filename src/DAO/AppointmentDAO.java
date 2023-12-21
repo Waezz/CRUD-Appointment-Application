@@ -173,11 +173,58 @@ public class AppointmentDAO {
         MONTHS_MAP.put("December", 12);
     }
 
+    //Method to map contact names to contact id's
+    private static final Map<String, Integer> CONTACTS_MAP = Map.of(
+            "1 - Anika Costa", 1,
+            "2 - Daniel Garcia", 2,
+            "3 - Li Lee", 3
+    );
+
+
+    public static int getContactNumber(String contactName) {
+        return CONTACTS_MAP.getOrDefault(contactName, -1); //Returns -1 if the name is not found
+    }
+
     public static int getMonthNumber(String monthName) {
         return MONTHS_MAP.getOrDefault(monthName, -1); //Returns -1 if the month name is not found
     }
 
-    //Method that finds appointments based on a month chosen by the user
+    //Method that fetches appointments based on the contact ID
+
+    public static ObservableList<Appointments> getAppointmentsByContact(int contactId) throws SQLException {
+        String query = "SELECT Appointment_ID, Title, Description, Location, Type, Start, " +
+                "End, Customer_ID, User_ID, Contact_ID FROM appointments WHERE Contact_ID = ?";
+        ObservableList<Appointments> appointmentsList = FXCollections.observableArrayList();
+
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setInt(1, contactId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    int appointmentId = rs.getInt("Appointment_ID");
+                    String title = rs.getString("Title");
+                    String description = rs.getString("Description");
+                    String type = rs.getString("Type");
+                    int customerId = rs.getInt("Customer_ID");
+                    int userId = rs.getInt("User_ID");
+
+                    Timestamp startUTC = rs.getTimestamp("Start");
+                    Timestamp endUTC = rs.getTimestamp("End");
+
+                    LocalDateTime startLocal = startUTC.toLocalDateTime();
+                    LocalDateTime endLocal = endUTC.toLocalDateTime();
+
+                    Appointments appointments = new Appointments(appointmentId, title, description, null, type, startLocal, endLocal, customerId, userId, contactId);
+                    appointmentsList.add(appointments);
+
+                }
+            }
+        }
+        return appointmentsList;
+    }
+
+    //Method that finds Customer ID's associated with appointments in a certain month
     public static ObservableList<Integer> getCustomerIdsByMonth(int monthNumber) throws SQLException {
         String query = "SELECT DISTINCT Customer_ID FROM appointments WHERE MONTH(Start) = ?";
         ObservableList<Integer> customerIds = FXCollections.observableArrayList();
@@ -194,6 +241,43 @@ public class AppointmentDAO {
         return customerIds;
     }
 
+    //Method to find Customer ID's associated with appointments of the specified type
+    public static ObservableList<Integer> getCustomerIdsByType(String type) throws SQLException {
+        String query = "SELECT DISTINCT Customer_ID FROM appointments WHERE Type = ?";
+        ObservableList<Integer> customerIds = FXCollections.observableArrayList();
+
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, type);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                customerIds.add(rs.getInt("Customer_ID"));
+            }
+        }
+        return customerIds;
+    }
+
+    //Method to find Customer ID's associated with specific countries
+    public static ObservableList<Integer> getCustomerIdsByCountry(String countryName) throws SQLException {
+        String query = "SELECT DISTINCT customers.Customer_ID FROM customers " +
+                       "JOIN first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID " +
+                       "JOIN countries ON first_level_divisions.Country_ID = countries.Country_ID " +
+                       "WHERE countries.Country = ?";
+        ObservableList<Integer> customerIds = FXCollections.observableArrayList();
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setString(1, countryName);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                customerIds.add(rs.getInt("Customer_ID"));
+            }
+        }
+        return customerIds;
+    }
+
+    //Method to retrieve customer data from associated ID's
     public static ObservableList<Customer> getCustomersById(ObservableList<Integer> ids) throws SQLException {
         if (ids.isEmpty()) return FXCollections.observableArrayList();
 
@@ -225,47 +309,23 @@ public class AppointmentDAO {
         return customers;
     }
 
-    /*
-
-    public static ObservableList<Customer> getCustomerByMonth(String monthName) throws SQLException {
-
-        int monthNumber = getMonthNumber(monthName);
-        if (monthNumber == -1) {
-            //Handle invalid month name
-            return FXCollections.observableArrayList();
-        }
-
-        String query = "SELECT DISTINCT c.Customer_ID, c.Customer_Name, c.Address, c.Postal_Code, c.Phone, c.Division_ID " +
-                "FROM customers c JOIN appointments a ON c.Customer_ID = a.Customer_ID " +
-                "WHERE MONTH(a.Start) = ?";
-        ObservableList<Customer> customers = FXCollections.observableArrayList();
+    //Method to fetch all appointment types
+    public static ObservableList<String> getAllAppointmentTypes() throws SQLException {
+        String query = "SELECT DISTINCT Type FROM appointments";
+        ObservableList<String> types = FXCollections.observableArrayList();
 
         try (Connection conn = JDBC.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(query)) {
-             pstmt.setInt(1, monthNumber);
-             ResultSet rs = pstmt.executeQuery();
+             PreparedStatement pstmt = conn.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
 
-             while (rs.next()) {
-                 int id = rs.getInt("Customer_ID");
-                 String name =rs.getString("Customer_Name");
-                 String address = rs.getString("Address");
-                 String postalCode = rs.getString("Postal_Code");
-                 String phone = rs.getString("Phone");
-                 int divisionId = rs.getInt("Division_ID");
-
-
-                 //Use helpers function to get the country name and division from divisionID
-                 CountryDivision countryDivision = DivisionUtil.getCountryAndDivisionByDivisionId(divisionId);
-                 String country = countryDivision != null ? countryDivision.getCountry() : "";
-                 String divisionName = countryDivision != null ? countryDivision.getDivision() : "";
-
-                 Customer customer = new Customer(id, name, address, postalCode, phone, divisionId);
-                 customer.add(customer);
-             }
+            while (rs.next()) {
+                types.add(rs.getString("Type"));
+            }
         }
-        return customers;
-     */
-
+        return types;
     }
+
+
+}
 
 

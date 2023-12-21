@@ -87,7 +87,7 @@ public class ReportsController implements Initializable {
         private TableColumn<Customer, String> countryColumn3;
 
         @FXML
-        private TableColumn<Customer, Integer> customerIdColumn;
+        private TableColumn<Appointments, Integer> customerIdColumn;
 
         @FXML
         private TableColumn<Customer, Integer> customerIdColumn1;
@@ -186,6 +186,25 @@ public class ReportsController implements Initializable {
 
                 setUpMonthsTable();
                 setUpMonthsChoiceBox();
+                setUpTypesTable();
+                setUpTypeChoiceBox();
+                setUpCountryTable();
+                setUpCountryChoiceBox();
+                setUpContactChoiceBox();
+                setUpContactTable();
+        }
+
+        //Sets up  "Contact Schedule" Tableview
+        private void setUpContactTable() {
+                apptIdColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
+                titleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+                descriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+                typeColumn.setCellValueFactory(new PropertyValueFactory<>("type"));
+                startTimeColumn.setCellValueFactory(new PropertyValueFactory<>("startTime"));
+                startDateColumn.setCellValueFactory(new PropertyValueFactory<>("startDate"));
+                endTimeColumn.setCellValueFactory(new PropertyValueFactory<>("endTime"));
+                endDateColumn.setCellValueFactory(new PropertyValueFactory<>("endDate"));
+                customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         }
 
         //Sets up "Total Customer by Month" Tableview
@@ -199,7 +218,58 @@ public class ReportsController implements Initializable {
                 stateColumn1.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
         }
 
-        //Populates the choice box in the "Total Customer by Moth" tab
+        //Sets up "Total Customer by Type" Tableview
+        private void setUpTypesTable() {
+                customerIdColumn2.setCellValueFactory(new PropertyValueFactory<>("id"));
+                nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
+                addressColumn2.setCellValueFactory(new PropertyValueFactory<>("address"));
+                phoneColumn2.setCellValueFactory(new PropertyValueFactory<>("phone"));
+                postalCodeColumn2.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+                countryColumn2.setCellValueFactory(new PropertyValueFactory<>("country"));
+                stateColumn2.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
+        }
+
+        //Sets up "Total Customer by Country" Tableview
+
+        private void setUpCountryTable() {
+                customerIdColumn3.setCellValueFactory(new PropertyValueFactory<>("id"));
+                nameColumn3.setCellValueFactory(new PropertyValueFactory<>("name"));
+                addressColumn3.setCellValueFactory(new PropertyValueFactory<>("address"));
+                phoneColumn3.setCellValueFactory(new PropertyValueFactory<>("phone"));
+                postalCodeColumn3.setCellValueFactory(new PropertyValueFactory<>("postalCode"));
+                countryColumn3.setCellValueFactory(new PropertyValueFactory<>("country"));
+                stateColumn3.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
+        }
+
+        //Populates the choice box in the "Total Customer by Country" tab
+        private void setUpCountryChoiceBox() {
+                byCountryBox.setItems(FXCollections.observableArrayList("U.S", "UK", "Canada"));
+                byCountryBox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
+                        if (newSelection != null) {
+                                try {
+                                        loadByCountryData(newSelection);
+                                } catch (SQLException e) {
+                                        e.printStackTrace();
+                                }
+                        }
+                });
+        }
+
+        private void loadByCountryData(String countryName) throws SQLException {
+                ObservableList<Integer> customerIds = AppointmentDAO.getCustomerIdsByCountry(countryName);
+                ObservableList<Customer> customers = AppointmentDAO.getCustomersById(customerIds);
+
+                for (Customer customer : customers) {
+                        CountryDivision countryDivision = DivisionUtil.getCountryAndDivisionByDivisionId(customer.getDivisionId());
+                        if (countryDivision != null) {
+                                customer.setCountry(countryDivision.getCountry());
+                                customer.setDivisionName(countryDivision.getDivision());
+                        }
+                }
+                byCountryTableView.setItems(customers);
+        }
+
+        //Populates the choice box in the "Total Customer by Month" tab
         private void setUpMonthsChoiceBox() {
                 byMonthBox.setItems(FXCollections.observableArrayList("January", "February", "March","April", "May", "June", "July",
                         "August", "September", "October", "November", "December"));
@@ -229,6 +299,63 @@ public class ReportsController implements Initializable {
                 }
                 byMonthTableView.setItems(customers);
         }
+
+        //Populates the choice box in the "Total Customers by Type" tab.
+        private void setUpTypeChoiceBox() {
+                try {
+                        ObservableList<String> types = AppointmentDAO.getAllAppointmentTypes();
+                        byTypeBox.setItems(types);
+                        byTypeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
+                                if (newSelection != null) {
+                                        try {
+                                                loadByTypeData(newSelection);
+                                        } catch (SQLException e) {
+                                                e.printStackTrace();
+                                        }
+                                }
+                        });
+                } catch (SQLException e) {
+                        e.printStackTrace();
+                }
+        }
+
+        //Loads customer data based on selected type
+        private void loadByTypeData(String type) throws SQLException {
+                ObservableList<Integer> customerIds = AppointmentDAO.getCustomerIdsByType(type);
+                ObservableList<Customer> customers = AppointmentDAO.getCustomersById(customerIds);
+
+                for (Customer customer : customers) {
+                        CountryDivision countryDivision = DivisionUtil.getCountryAndDivisionByDivisionId(customer.getDivisionId());
+                        if (countryDivision != null) {
+                                customer.setCountry(countryDivision.getCountry());
+                                customer.setDivisionName(countryDivision.getDivision());
+                        }
+                }
+                byTypeTableView.setItems(customers);
+        }
+
+        private void setUpContactChoiceBox() {
+                byContactBox.setItems(FXCollections.observableArrayList("1 - Anika Costa", "2 - Daniel Garcia", "3 - Li Lee"));
+                byContactBox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
+                        if (newSelection != null) {
+                                try {
+                                        loadByContactData(newSelection);
+                                } catch (SQLException e) {
+                                        e.printStackTrace();
+                                }
+                        }
+                });
+        }
+
+        private void loadByContactData(String contactName) throws SQLException {
+                int contactId = AppointmentDAO.getContactNumber(contactName);
+                ObservableList<Appointments> appointments = AppointmentDAO.getAppointmentsByContact(contactId);
+
+                contactTableView.setItems(appointments);
+
+        }
+
+
 
 
 }
