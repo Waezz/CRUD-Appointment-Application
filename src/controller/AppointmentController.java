@@ -235,9 +235,13 @@ public class AppointmentController implements Initializable {
         loadAppointmentData();
         updateLocationLabel();
 
-        viewMonthRadioBtn.setOnAction(event -> filterAppointmentsByMonth());
-        viewWeekRadioBtn.setOnAction(event -> filterAppointmentsByWeek());
-        viewAllRadioBtn.setOnAction(event -> loadAppointmentData());
+
+        // These Lambda expressions are used for setting the functionality of the 'view by month', 'view by week', and 'view all' radio buttons.
+        // When selected, it retrieves the current month's (or week's) start and end dates and updates the tableview
+        // to display appointments within this month/week
+        viewMonthRadioBtn.setOnAction(event -> updateAppointmentTableView(LocalDate.now().withDayOfMonth(1), LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())));
+        viewWeekRadioBtn.setOnAction(event -> updateAppointmentTableView(LocalDate.now().with(ChronoField.DAY_OF_WEEK, 1), LocalDate.now().with(ChronoField.DAY_OF_WEEK, 7)));
+        viewAllRadioBtn.setOnAction(event -> updateAppointmentTableView(LocalDate.MIN, LocalDate.MAX));
     }
 
     private void loadAppointmentData() {

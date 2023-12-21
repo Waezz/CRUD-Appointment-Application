@@ -241,13 +241,14 @@ public class ReportsController implements Initializable {
                 stateColumn3.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
         }
 
+        //Lambda expression that defines an event listener that's triggered when the selected item changes
         //Populates the choice box in the "Total Customer by Country" tab
         private void setUpCountryChoiceBox() {
                 byCountryBox.setItems(FXCollections.observableArrayList("U.S", "UK", "Canada"));
-                byCountryBox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
-                        if (newSelection != null) {
+                byCountryBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                        if (newValue != null) {
                                 try {
-                                        loadByCountryData(newSelection);
+                                        loadByCountryData(newValue.toString());
                                 } catch (SQLException e) {
                                         e.printStackTrace();
                                 }
@@ -273,10 +274,10 @@ public class ReportsController implements Initializable {
         private void setUpMonthsChoiceBox() {
                 byMonthBox.setItems(FXCollections.observableArrayList("January", "February", "March","April", "May", "June", "July",
                         "August", "September", "October", "November", "December"));
-                byMonthBox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
-                        if (newSelection != null) {
+                byMonthBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                        if (newValue != null) {
                                 try {
-                                        loadByMonthData(newSelection);
+                                        loadByMonthData(newValue);
                                 } catch (SQLException e) {
                                         e.printStackTrace();
                                 }
@@ -305,10 +306,10 @@ public class ReportsController implements Initializable {
                 try {
                         ObservableList<String> types = AppointmentDAO.getAllAppointmentTypes();
                         byTypeBox.setItems(types);
-                        byTypeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection) -> {
-                                if (newSelection != null) {
+                        byTypeBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                                if (newValue != null) {
                                         try {
-                                                loadByTypeData(newSelection);
+                                                loadByTypeData(newValue);
                                         } catch (SQLException e) {
                                                 e.printStackTrace();
                                         }
