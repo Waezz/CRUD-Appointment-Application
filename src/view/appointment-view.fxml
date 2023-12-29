@@ -1,17 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.ToggleGroup?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="controller.AppointmentController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AppointmentController">
     <children>
         <AnchorPane layoutX="29.0" layoutY="23.0" prefHeight="554.0" prefWidth="966.0" style="-fx-border-color: grey; -fx-border-radius: 20;">
             <children>
@@ -31,7 +24,6 @@
                         <TableColumn fx:id="apptUserIdColumn" prefWidth="75.0" text="User ID" />
                     </columns>
                 </TableView>
-                <TextField fx:id="appointmentSearchTxt" layoutX="756.0" layoutY="52.0" />
                 <RadioButton fx:id="viewMonthRadioBtn" layoutX="205.0" layoutY="65.0" mnemonicParsing="false" onAction="#onActionViewMonth" text="View by Month">
                     <toggleGroup>
                         <ToggleGroup fx:id="tgMainView" />
@@ -46,12 +38,12 @@
                     </font>
                 </Label>
                 <Button layoutX="15.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionAddAppt" prefWidth="140.0" text="Add Appointments" />
-                <Button layoutX="205.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionModifyAppt" prefWidth="140.0" text="Modify Appointments" />
+                <Button layoutX="205.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionModifyAppt" prefWidth="140.0" text="Update Appointments" />
                 <Button layoutX="395.0" layoutY="498.0" maxHeight="-Infinity" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionDeleteAppt" prefWidth="140.0" text="Delete Appointments" />
                 <Button layoutX="585.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionReport" prefWidth="140.0" text=" Reports" />
                 <Button layoutX="775.0" layoutY="498.0" maxWidth="-Infinity" mnemonicParsing="false" onAction="#onActionLogOut" prefWidth="140.0" text="Logout" />
-                <Label layoutX="638.0" layoutY="6.0" text="Your Time Zone:" />
-                <Label fx:id="localTimeZone" layoutX="730.0" layoutY="6.0" text="America / Denver" />
+                <Label layoutX="700.0" layoutY="65.0" text="Your Time Zone:" />
+                <Label fx:id="localTimeZone" layoutX="800.0" layoutY="65.0" text="America / Denver" />
             </children>
         </AnchorPane>
     </children>

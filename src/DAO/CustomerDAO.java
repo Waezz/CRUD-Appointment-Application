@@ -3,12 +3,9 @@ package DAO;
 import Utilities.CountryDivision;
 import Utilities.JDBC;
 import Utilities.DivisionUtil;
-import com.mysql.cj.jdbc.JdbcConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import model.Customer;
-
-import javax.xml.transform.Result;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,10 +34,6 @@ public class CustomerDAO {
                 CountryDivision countryDivision = DivisionUtil.getCountryAndDivisionByDivisionId(divisionId);
                 String country = countryDivision != null ? countryDivision.getCountry() : "";
                 String divisionName = countryDivision != null ? countryDivision.getDivision() : "";
-
-                //Debugging
-                System.out.println("Fetched customer: " + id + " - " + name);
-
 
                 //Create a customer object and add it to the list
                 Customer customer = new Customer(id, name, address, postalCode, phone, divisionId);
@@ -100,5 +93,14 @@ public class CustomerDAO {
 
         }
 
+    }
+
+    public static void deleteCustomer(int customerId) throws SQLException {
+        String query = "DELETE FROM customers WHERE Customer_ID = ?";
+        try (Connection conn = JDBC.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+            pstmt.setInt(1, customerId);
+            pstmt.executeUpdate();
+        }
     }
 }

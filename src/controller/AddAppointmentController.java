@@ -27,53 +27,96 @@ import java.time.LocalTime;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * This controller handles the logic for adding new appointments to the application.
+ * It interacts with the addAppointment fxml view and manages user input, data validation,
+ * and communication with the database.
+ *
+ * @author William Deutsch
+ */
 public class AddAppointmentController implements Initializable {
 
     Stage stage;
     Parent scene;
 
+    /**
+     * The choice-box for the current customers.
+     */
     @FXML
     private ChoiceBox<Integer> apptCustBox;
 
+    /**
+     * The choice-box for the contacts.
+     */
     @FXML
     private ChoiceBox<Integer> apptContBox;
 
+    /**
+     * The text field for the appointment description.
+     */
     @FXML
     private TextField apptDescTxt;
 
+    /**
+     * The date picker for the appointment end date.
+     */
     @FXML
     private DatePicker apptEndDate;
 
+    /**
+     * The combo-box for appointment end times.
+     */
     @FXML
     private ComboBox<LocalTime> apptEndTime;
 
+    /**
+     * The text field for appointment id's (disabled).
+     */
     @FXML
     private TextField apptIdTxt;
 
+    /**
+     * The text field for the appointment location.
+     */
     @FXML
     private TextField apptLocTxt;
 
+    /**
+     * The date picker for the appointment start date.
+     */
     @FXML
     private DatePicker apptStartDate;
 
+    /**
+     * The combo-box for the appointment start time.
+     */
     @FXML
     private ComboBox<LocalTime> apptStartTIme;
 
+    /**
+     * The text field for the appointment title.
+     */
     @FXML
     private TextField apptTitleTxt;
 
+    /**
+     * The text field for the appointment type.
+     */
     @FXML
     private TextField apptTypeTxt;
 
+    /**
+     * The choice-box for the users.
+     */
     @FXML
     private ChoiceBox<Integer> apptUserBox;
 
     /**
-     * This Method takes necessary parameters and return a boolean indicating whether an overlap occurs
+     * This Method takes necessary parameters and return a boolean indicating whether an overlap occurs.
      * @param customerId
      * @param start
      * @param end
-     * @return SQL
+     * @return False if no overlap is found.
      */
     private boolean isAppointmentOverlapping(int customerId, LocalDateTime start, LocalDateTime end) {
         try {
@@ -89,6 +132,18 @@ public class AddAppointmentController implements Initializable {
         return false; //No overlap found
     }
 
+
+    /**
+     * Validates and saves the appointment information entered by the user.
+     * Performs checks for:
+     * -Empty fields
+     * -Overlapping appointments
+     * -Invalid start and end time
+     * -Appointments outside business hours
+     * If all validations pass, the appointment is saved to the database, and the user is
+     * returned to the main appointment screen.
+     * @param event The event that triggered this method.
+     */
     @FXML
     void onActionApptSave(ActionEvent event) {
 
@@ -149,6 +204,11 @@ public class AddAppointmentController implements Initializable {
 
     }
 
+    /**
+     * Navigates back to the main appointment screen.
+     * @param event The event that triggered this method.
+     * @throws IOException If the FXML file for the main appointment screen cannot be loaded.
+     */
     private void returnToMain(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/appointment-view.fxml"));
@@ -167,6 +227,10 @@ public class AddAppointmentController implements Initializable {
 
     }
 
+    /**
+     * Populates the appointment start and end time combo boxes with available time options.
+     * Times are displayed in 30 minute increments, starting from 00:00.
+     */
     private void populateTimeBoxes() {
         LocalTime startTime = LocalTime.of(0,0);
         LocalTime endTime = LocalTime.of(23,00);
@@ -178,6 +242,11 @@ public class AddAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * Sets up listeners for the appointment start and end date pickers to ensure consistency.
+     * The end date is automatically set to match the start date, and the user is prevented
+     * from selecting an end date that occurs on a different day than the start date.
+     */
     private void setUpDatePickerListener() {
         apptStartDate.valueProperty().addListener((observable, oldValue, newValue) -> {
             apptEndDate.setValue(newValue); //Set End Date to match Start Date
@@ -192,6 +261,11 @@ public class AddAppointmentController implements Initializable {
         });
     }
 
+    /**
+     * Initializes the controller class. This method is automatically called after the FXML file has been loaded.
+     * @param url the location used to resolve relative paths for the root object, or null if unknown.
+     * @param resourceBundle the resources used to localize the root object,  or null if none.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateTimeBoxes();
@@ -200,8 +274,6 @@ public class AddAppointmentController implements Initializable {
         // Populate choice boxes
         apptContBox.setItems(FXCollections.observableArrayList(1, 2, 3));
         apptUserBox.setItems(FXCollections.observableArrayList(1, 2));
-
-
 
         // Populate Customer ChoiceBox with current customers
         try {

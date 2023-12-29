@@ -26,68 +26,133 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoField;
 import java.util.ResourceBundle;
 
+/**
+ * This controller handles the logic for managing and displaying appointments within the application.
+ * It interacts with the appointments fxml view to present a table of appointments,
+ * enable navigation to other screens, and provide actions for adding, modifying, deleting, and filtering appointments.
+ *
+ * LAMBDA EXPRESSIONS used on lines 240-242.
+ *
+ * @author William Deutsch
+ *
+ */
 public class AppointmentController implements Initializable {
 
     Stage stage;
     Parent scene;
 
-    @FXML
-    private TextField appointmentSearchTxt;
 
+    /**
+     * The table-view for the appointments.
+     */
     @FXML
     private TableView<Appointments> appointmentTableView;
 
+    /**
+     * The contact column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, Integer> apptContactColumn;
 
+    /**
+     * The customer_id column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, Integer> apptCustomerIdColumn;
 
+    /**
+     * The description column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, String> apptDescriptionColumn;
 
+    /**
+     * The end date column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, LocalDate> apptEndDateColumn;
 
+    /**
+     * The end time column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, LocalTime> apptEndTimeColumn;
 
+    /**
+     * The appointment_id column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, Integer> apptIdColumn;
 
+    /**
+     * The location column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, String> apptLocationColumn;
 
+    /**
+     * The start date column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, LocalDate> apptStartDateColumn;
 
+    /**
+     * The start time column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, LocalTime> apptStartTimeColumn;
 
+    /**
+     * The title column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, String> apptTitleColumn;
 
+    /**
+     * The type column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, String> apptTypeColumn;
 
+    /**
+     * The user_id column for the appointment table-view.
+     */
     @FXML
     private TableColumn<Appointments, Integer> apptUserIdColumn;
 
+    /**
+     * The label to display the local time zone.
+     */
     @FXML
     private Label localTimeZone;
 
+    /**
+     * Toggle group for the radio buttons
+     */
     @FXML
     private ToggleGroup tgMainView;
 
+    /**
+     * Radio button to display all appointments.
+     */
     @FXML
     private RadioButton viewAllRadioBtn;
 
+    /**
+     * Radio button to display customers.
+     */
     @FXML
     private RadioButton viewCustomersRadioBtn;
 
+    /**
+     * Radio button to filter appointments by month.
+     */
     @FXML
     private RadioButton viewMonthRadioBtn;
 
+    /**
+     * Radio button to filter appointments by week.
+     */
     @FXML
     private RadioButton viewWeekRadioBtn;
 
@@ -105,6 +170,10 @@ public class AppointmentController implements Initializable {
 
     }
 
+    /**
+     * Deletes the selected appointment after confirming with the user.
+     * @param event the event that triggered this method.
+     */
     @FXML
     void onActionDeleteAppt(ActionEvent event) {
         Appointments selectedAppointment = appointmentTableView.getSelectionModel().getSelectedItem();
@@ -212,11 +281,18 @@ public class AppointmentController implements Initializable {
 
     }
 
+
     @FXML
     void onActionViewWeek(ActionEvent event) {
 
     }
 
+    /**
+     * Initializes the controller class. Sets up table columns, loads appointment data,
+     * sets event handlers for radio buttons, and displays the current time zone.
+     * @param url The location used to resolve relative paths for the root object, or null in unknown.
+     * @param resourceBundle The resources used to localize the root object, or null if none.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         apptIdColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
@@ -236,14 +312,20 @@ public class AppointmentController implements Initializable {
         updateLocationLabel();
 
 
-        // These Lambda expressions are used for setting the functionality of the 'view by month', 'view by week', and 'view all' radio buttons.
-        // When selected, it retrieves the current month's (or week's) start and end dates and updates the tableview
-        // to display appointments within this month/week
+        /**
+         * LAMBDA JUSTIFICATION:
+         * Lambda expressions are used here to create concise and readable event handlers directly
+         * within the initialize method. This approach streamlines the code and avoids the need for seperate methods for
+         * each handler, improving code organization and maintainability.
+         */
         viewMonthRadioBtn.setOnAction(event -> updateAppointmentTableView(LocalDate.now().withDayOfMonth(1), LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())));
         viewWeekRadioBtn.setOnAction(event -> updateAppointmentTableView(LocalDate.now().with(ChronoField.DAY_OF_WEEK, 1), LocalDate.now().with(ChronoField.DAY_OF_WEEK, 7)));
         viewAllRadioBtn.setOnAction(event -> updateAppointmentTableView(LocalDate.MIN, LocalDate.MAX));
     }
 
+    /**
+     * Retrieves and displays all appointments from the database.
+     */
     private void loadAppointmentData() {
         try {
             ObservableList<Appointments> appointmentData = AppointmentDAO.getAllAppointments();
@@ -261,6 +343,10 @@ public class AppointmentController implements Initializable {
         localTimeZone.setText(zoneId.toString());
     }
 
+    /**
+     * Filters appointments to display only those within the current month.
+     * Made redundant by  Lambda expressions on lines 240-242.
+     */
     private void filterAppointmentsByMonth() {
         LocalDate now = LocalDate.now();
         LocalDate startOfMonth = now.withDayOfMonth(1);
@@ -268,6 +354,10 @@ public class AppointmentController implements Initializable {
         updateAppointmentTableView(startOfMonth, endOfMonth);
     }
 
+    /**
+     * Filters appointments to display only those within the specified date range.
+     * Made redundant by Lambda expressions on lines 240-242.
+     */
     private void filterAppointmentsByWeek() {
         LocalDate now = LocalDate.now();
         LocalDate startOfWeek = now.with(ChronoField.DAY_OF_WEEK, 1);
@@ -275,6 +365,11 @@ public class AppointmentController implements Initializable {
         updateAppointmentTableView(startOfWeek, endOfWeek);
     }
 
+    /**
+     * Updates the table view within the specified date range.
+     * @param start The start of the date range.
+     * @param end The end of the date range.
+     */
     private void updateAppointmentTableView(LocalDate start, LocalDate end) {
         try {
             ObservableList<Appointments> filteredAppointments = AppointmentDAO.getAppointmentsByDateRange(start, end);

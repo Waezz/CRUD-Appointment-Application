@@ -1,5 +1,6 @@
 package controller;
 
+import DAO.AppointmentDAO;
 import DAO.CustomerDAO;
 import Utilities.CountryDivision;
 import Utilities.DivisionUtil;
@@ -15,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import model.Appointments;
 import model.Customer;
 
 import java.io.IOException;
@@ -22,6 +24,15 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
 
+import static DAO.CustomerDAO.deleteCustomer;
+/**
+ * This controller handles the logic for managing and displaying customers within the application.
+ * It interacts with the customer fxml view to present a table of customers,
+ * enable navigation to other screens, and provide actions for adding, modifying, and deleting customers.
+ *
+ * @author William Deutsch
+ *
+ */
 public class CustomerController implements Initializable {
 
     Stage stage;
@@ -76,7 +87,44 @@ public class CustomerController implements Initializable {
 
     @FXML
     void onActionDeleteCust(ActionEvent event) {
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+        if (selectedCustomer == null) {
+            UserInterfaceUtil.displayAlert("No customer selected.", "Please select a customer to delete.", Alert.AlertType.ERROR);
+            return;
+        }
+        checkAndDeleteCustomer(selectedCustomer);
 
+        //Refresh the Tableview
+        loadCustomerData();
+    }
+
+    //Method to check if the selected customer has any appointments
+    private void checkAndDeleteCustomer(Customer selectedCustomer) {
+        try {
+            ObservableList<Appointments> appointments = AppointmentDAO.getAppointmentsByCustomer(selectedCustomer.getId());
+
+            if (!appointments.isEmpty()) {
+                UserInterfaceUtil.displayAlert("You cannot delete a customer with existing appointments. " +
+                                               "Please cancel all associated appointments first.", "Delete Customer", Alert.AlertType.INFORMATION);
+                return;
+            }
+            confirmAndDeleteCustomer(selectedCustomer);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //If no appointments are found - Method to ask for confirmation for deletion
+
+    private void confirmAndDeleteCustomer(Customer customer) throws SQLException {
+        Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Are you sure you want to delete this customer: " + customer.getName() + "?",
+                ButtonType.YES, ButtonType.NO);
+        confirmationAlert.showAndWait();
+
+        if (confirmationAlert.getResult() == ButtonType.YES) {
+            deleteCustomer(customer.getId());
+        }
     }
 
     /**
