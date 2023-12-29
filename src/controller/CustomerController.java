@@ -39,36 +39,69 @@ public class CustomerController implements Initializable {
     Parent scene;
 
 
+    /**
+     * The address column in the customer table-view.
+     */
     @FXML
     private TableColumn<Customer, String> customerAddressColumn;
 
+    /**
+     * The country column in the customer table-view.
+     */
     @FXML
     private TableColumn<Customer, String> customerCountryColumn;
 
+    /**
+     * The customer_id column in the customer table-view.
+     */
     @FXML
     private TableColumn<Customer, Integer> customerIdColumn;
 
+    /**
+     * The name column in the customer table-view.
+     */
     @FXML
     private TableColumn<Customer, String> customerNameColumn;
 
+    /**
+     * The phone column in the customer table-view.
+     */
     @FXML
     private TableColumn<Customer, String> customerPhoneColumn;
 
+    /**
+     * The postal-code column in the customer table-view.
+     */
     @FXML
     private TableColumn<Customer, String> customerPostColumn;
 
+    /**
+     * The state column in the customer table-view.
+     */
     @FXML
     private TableColumn<Customer, String> customerStateColumn;
 
+    /**
+     * The customer table-view.
+     */
     @FXML
     private TableView<Customer> customerTableView;
 
+    /**
+     * The toggle group for the radio buttons.
+     */
     @FXML
     private ToggleGroup tgMainView;
 
+    /**
+     * The radio button to view all appointments.
+     */
     @FXML
     private RadioButton viewAllRadioBtn;
 
+    /**
+     * The radio button to view all customers.
+     */
     @FXML
     private RadioButton viewCustomersRadioBtn;
 
@@ -85,6 +118,12 @@ public class CustomerController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Handles the action of deleting a customer.
+     * This method is triggered when the 'Delete Customer' button is clicked.
+     * It deletes the selected customer after confirmation and validation checks.
+     * @param event The event that triggered this method.
+     */
     @FXML
     void onActionDeleteCust(ActionEvent event) {
         Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
@@ -98,7 +137,12 @@ public class CustomerController implements Initializable {
         loadCustomerData();
     }
 
-    //Method to check if the selected customer has any appointments
+    /**
+     * Checks if the selected customer has any appointments before deletion.
+     * If appointments exist, it prevents deletion and alerts the user
+     * Otherwise, it proceeds to ask for confirmation for deletion.
+     * @param selectedCustomer The customer selected for deletion.
+     */
     private void checkAndDeleteCustomer(Customer selectedCustomer) {
         try {
             ObservableList<Appointments> appointments = AppointmentDAO.getAppointmentsByCustomer(selectedCustomer.getId());
@@ -114,8 +158,12 @@ public class CustomerController implements Initializable {
         }
     }
 
-    //If no appointments are found - Method to ask for confirmation for deletion
-
+    /**
+     * Asks for confirmation and deletes the customer if confirmed.
+     * Displays a confirmation dialog before deleting the customer.
+     * @param customer The customer to be deleted.
+     * @throws SQLException If there is an issue executing the operation in the database.
+     */
     private void confirmAndDeleteCustomer(Customer customer) throws SQLException {
         Alert confirmationAlert = new Alert(Alert.AlertType.CONFIRMATION,
                 "Are you sure you want to delete this customer: " + customer.getName() + "?",
@@ -128,7 +176,7 @@ public class CustomerController implements Initializable {
     }
 
     /**
-     * Return to the login page.
+     * Handles the action of logging out.
      * @param event The event that triggered this method.
      * @throws IOException If the FXML file for the login page cannot be loaded.
      */
@@ -194,17 +242,29 @@ public class CustomerController implements Initializable {
 
     }
 
+    /**
+     * Handles the action of viewing customers.
+     * @param event The event that triggered this method.
+     */
     @FXML
     void onActionViewCustomers(ActionEvent event) {
 
     }
 
+    /**
+     * Initializes the controller class. It sets up the customer table and loads customer data.
+     * @param url The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resourceBundle The resources used to localize the root object, or null if none.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         setUpCustomerTable();
         loadCustomerData();
     }
 
+    /**
+     * Sets up the columns in the customer table with the correct data properties.
+     */
     private void setUpCustomerTable() {
        customerIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
        customerNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -215,6 +275,10 @@ public class CustomerController implements Initializable {
        customerStateColumn.setCellValueFactory(new PropertyValueFactory<>("divisionName"));
     }
 
+    /**
+     * Loads customer data from the database and populates the table view.
+     * It fetches customer data, resolves their country and division, and updates the tableview.
+     */
     private void loadCustomerData() {
         try {
             ObservableList<Customer> customerData = CustomerDAO.getAllCustomers();

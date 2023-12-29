@@ -29,6 +29,12 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Controller class for managing the login functionality of the application.
+ * This class handles user authentication, login and exit actions, and alerts for upcoming appointments.
+ *
+ * @author William Deutsch
+ */
 public class LoginController implements Initializable {
 
     Stage stage;
@@ -36,47 +42,86 @@ public class LoginController implements Initializable {
 
     private ResourceBundle bundle;
 
+    /**
+     * The exit button to terminate the application.
+     */
     @FXML
     private Button exitBtn;
 
+    /**
+     * The user location label.
+     */
     @FXML
     private Label userLocationLabel;
 
+    /**
+     * The user language label.
+     */
     @FXML
     private Label userLanguageLabel;
 
+    /**
+     * The button to login.
+     */
     @FXML
     private Button loginBtn;
 
+    /**
+     * The text field for user's password.
+     */
     @FXML
     private TextField passWordTxt;
 
+    /**
+     * The text field for user's name.
+     */
     @FXML
     private TextField userNameTxt;
 
+    /**
+     * The label for the main application.
+     */
     @FXML
     private Label mainAppLabel;
 
+    /**
+     * The label for the username.
+     */
     @FXML
     private Label userNameLabel;
 
+    /**
+     * The label for the password.
+     */
     @FXML
     private Label passwordLabel;
 
+    /**
+     * The label for the log in button.
+     */
     @FXML
     private Button loginBtnLabel;
 
+    /**
+     * The label for the exit button.
+     */
     @FXML
     private Button exitBtnLabel;
 
+    /**
+     * The label for the current language.
+     */
     @FXML
     private Label languageLabel;
 
+    /**
+     * The label for the user's current time zone.
+     */
     @FXML
     private Label zoneLabel;
 
     /**
-     * Exits the application when triggered.
+     * Terminates the application when triggered.
      * @param event The event that triggered this method.
      */
     @FXML
@@ -86,6 +131,15 @@ public class LoginController implements Initializable {
 
     }
 
+    /**
+     * Handles the login process when the login button is pressed.
+     * It checks for empty credentials , validates the user, and logs in if valid.
+     * Also logs the login attempt and checks for upcoming appointments.
+     *
+     * @param event The event that triggered this method.
+     * @throws IOException If there is an issue loading the next view.
+     * @throws SQLException If there is an issue accessing the database.
+     */
     @FXML
     void loginBtnPressed(ActionEvent event) throws IOException, SQLException {
         String username = userNameTxt.getText();
@@ -117,6 +171,12 @@ public class LoginController implements Initializable {
         }
     }
 
+    /**
+     * Checks for upcoming appointments within the next fifteen minutes.
+     * Alerts the user if an appointment is upcoming or if there are no upcoming appointments.
+     *
+     * @throws SQLException If there is an issue accessing the database.
+     */
     public void checkForUpcoming() throws SQLException {
         LocalDateTime currentTime = LocalDateTime.now();
         LocalDateTime currentTimePlus15 = currentTime.plusMinutes(15);
@@ -146,7 +206,13 @@ public class LoginController implements Initializable {
         }
     }
 
-    //Method to write to the File. Uses filewriter and bufferedwriter to append information to login_activity
+    /**
+     * Logs the result of a login attempt to a file.
+     * Records the username, timestamp, and whether the login was successful or not.
+     *
+     * @param username The username of the person attempting to log in.
+     * @param isSuccess A boolean representing whether the login attempt was successful.
+     */
     public void logLogin(String username, boolean isSuccess) {
         try(FileWriter fw = new FileWriter("login_activiy.txt", true);
             BufferedWriter bw = new BufferedWriter(fw)) {
@@ -160,8 +226,11 @@ public class LoginController implements Initializable {
 
 
     /**
-     * Displays alert dialog to user with the specific content, title, and type.
-     * @param type The type of alert such as ERROR, WARNING, INFO.
+     * Displays an alert dialog to the user.
+     * The content and type are based on the provided key and type.
+     * @param key The key used to retrive the alert message from the resource bundle.
+     * @param bundle The resource bundle containing the localized messages.
+     * @param type The type of alert (e.g, ERROR, INFO, WARNING).
      */
     public static void showAlert(String key, ResourceBundle bundle, Alert.AlertType type) {
         Alert alert = new Alert(type);
@@ -172,6 +241,12 @@ public class LoginController implements Initializable {
         alert.showAndWait();
     }
 
+    /**
+     * Initializes the controller class.
+     * This method is automatically called after the FXML file has been loaded.
+     * @param url The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resourceBundle The resources used to localize the root object, or null if none.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         String language = Locale.getDefault().getLanguage();
@@ -185,14 +260,21 @@ public class LoginController implements Initializable {
         updateLocationLabel();
 
     }
+
     /**
-     * Obtains the current time zone from the systems default and changes the label.
+     * Updates the location label with the current system's default time zone.
      */
     private void updateLocationLabel() {
         ZoneId zoneId = ZoneId.systemDefault();
         userLocationLabel.setText(zoneId.toString());
          }
 
+    /**
+     * Updates the UI based on the provided resource bundle.
+     * Sets up texts for labels and buttons according to the current language.
+     *
+     * @param bundle The resource bundle containing the texts.
+     */
     private void updateTexts(ResourceBundle bundle) {
         mainAppLabel.setText(bundle.getString("mainAppLabel"));
         userNameLabel.setText(bundle.getString("userNameLabel"));

@@ -24,6 +24,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ResourceBundle;
 
+/**
+ * Controller class for updating appointments in the application.
+ * This class handles the functionality of modifying existing appointment details.
+ *
+ * @author William Deutsch
+ */
 public class UpdateAppointmentController implements Initializable {
 
     Stage stage;
@@ -34,42 +40,87 @@ public class UpdateAppointmentController implements Initializable {
 
     private Appointments selectedAppointment;
 
+    /**
+     * The choice-box for the customers.
+     */
     @FXML
     private ChoiceBox<Integer> apptCustBox;
 
+    /**
+     * The choice-box for the contacts.
+     */
     @FXML
     private ChoiceBox<Integer> apptContBox;
 
+    /**
+     * The text field for the appointment description.
+     */
     @FXML
     private TextField apptDescTxt;
 
+    /**
+     * The date picker for the appointment end date.
+     */
     @FXML
     private DatePicker apptEndDate;
 
+    /**
+     * The combo-box for the appointment end time.
+     */
     @FXML
     private ComboBox<LocalTime> apptEndTime;
 
+    /**
+     * The text field for the appointment id.
+     */
     @FXML
     private TextField apptIdTxt;
 
+    /**
+     * The text field for the appointment location.
+     */
     @FXML
     private TextField apptLocTxt;
 
+    /**
+     * The date picker for the appointment start date.
+     */
     @FXML
     private DatePicker apptStartDate;
 
+    /**
+     * The combo-box for the appointment start time.
+     */
     @FXML
     private ComboBox<LocalTime> apptStartTIme;
 
+    /**
+     * The text field for the appointment title.
+     */
     @FXML
     private TextField apptTitleTxt;
 
+    /**
+     * The text field for the appointment type.
+     */
     @FXML
     private TextField apptTypeTxt;
 
+    /**
+     * The choice-box for the users.
+     */
     @FXML
     private ChoiceBox<Integer> apptUserBox;
 
+    /**
+     * Checks if the given appointment times overlap with other appointments for the same customer.
+     *
+     * @param appointmentIdToExclude The appointment ID to exclude from the overlapping check.
+     * @param customerId The ID of the customer whose appointments are being checked.
+     * @param start The start time of the new appointment.
+     * @param end The end time of the new appointment.
+     * @return true if there is an overlap, false otherwise.
+     */
     private boolean isAppointmentOverlapping(int appointmentIdToExclude, int customerId, LocalDateTime start, LocalDateTime end) {
         try {
             ObservableList<Appointments> existingAppointments = AppointmentDAO.getAppointmentsByCustomer(customerId);
@@ -85,6 +136,12 @@ public class UpdateAppointmentController implements Initializable {
         return false; //No Overlap found
     }
 
+    /**
+     * Handles the action of saving the updated appointment.
+     * Validates the input fields, checks for time conflicts, and updates the appointment in the database.
+     *
+     * @param event The event that triggered this method.
+     */
     @FXML
     void onActionApptSave(ActionEvent event) {
         try {
@@ -142,6 +199,12 @@ public class UpdateAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * Navigates back to the Appointment screen.
+     *
+     * @param event The event that triggered this method.
+     * @throws IOException IF the FXML file for the appointments screen cannot be loaded.
+     */
     private void returnToMain(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/appointment-view.fxml"));
@@ -162,6 +225,11 @@ public class UpdateAppointmentController implements Initializable {
         stage.show();
     }
 
+    /**
+     * Initializes the appointment data in the form fields.
+     *
+     * @param appointments The appointment data to initialize the form with.
+     */
     public void initializeAppointmentData(Appointments appointments) {
         updatingAppointmentId = appointments.getAppointmentId();
         this.selectedAppointment = appointments;
@@ -184,6 +252,9 @@ public class UpdateAppointmentController implements Initializable {
         apptEndTime.setValue(appointments.getEndTime());
     }
 
+    /**
+     * Populates the time selection combo boxes with appropriate times.
+     */
     private void populateTimeBoxes() {
         LocalTime startTime = LocalTime.of(0,0);
         LocalTime endTime = LocalTime.of(23,00);
@@ -195,6 +266,9 @@ public class UpdateAppointmentController implements Initializable {
         }
     }
 
+    /**
+     * Sets up listeners for the date pickers to ensure valid date selections.
+     */
     private void setUpDatePickerListener() {
         apptStartDate.valueProperty().addListener((observable, oldValue, newValue) -> {
             apptEndDate.setValue(newValue); //Set End Date to match Start Date
@@ -209,6 +283,13 @@ public class UpdateAppointmentController implements Initializable {
         });
     }
 
+    /**
+     * Initializes the controller class.
+     * It sets up the time pickers, date picker listeners, and populates the choice-boxes.
+     *
+     * @param url The location used to resolve relative paths for the root object, or null if unknown.
+     * @param resourceBundle The resources used to localize the root object, or null in none.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         populateTimeBoxes();

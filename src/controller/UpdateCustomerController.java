@@ -21,6 +21,12 @@ import model.Customer;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/**
+ * Controller class for updating customer information in the application.
+ * This class handles the functionality of modifying an existing customer's details.
+ *
+ * @author William Deutsch
+ */
 public class UpdateCustomerController {
 
     Stage stage;
@@ -29,27 +35,54 @@ public class UpdateCustomerController {
     private Customer selectedCustomer;
 
 
+    /**
+     * The text field for the customer address.
+     */
     @FXML
     private TextField custAddressTxt;
 
+    /**
+     * The combo-box for the customer country.
+     */
     @FXML
     private ComboBox<String> custCountryBox;
 
+    /**
+     * The text field for the customer_id.
+     */
     @FXML
     private TextField custIdTxt;
 
+    /**
+     * The text field for the customer name.
+     */
     @FXML
     private TextField custNameTxt;
 
+    /**
+     * The text field for the customer phone.
+     */
     @FXML
     private TextField custPhoneTxt;
 
+    /**
+     * The text field for the customer postal-code.
+     */
     @FXML
     private TextField custPostalTxt;
 
+    /**
+     * The combo-box for the customer state/province.
+     */
     @FXML
     private ComboBox<String> custStateBox;
 
+    /**
+     * Handles the action of saving the updated customer information.
+     * Validates the input fields and updates the customer in the database.
+     *
+     * @param event The event that triggered this method.
+     */
     @FXML
     void onActionCustSave(ActionEvent event) {
 
@@ -82,6 +115,12 @@ public class UpdateCustomerController {
         }
     }
 
+    /**
+     * Navigates back to the Appointment screen.
+     *
+     * @param event The event that triggered this method.
+     * @throws IOException IF the FXML file for the appointments screen cannot be loaded.
+     */
     private void returnToMain(ActionEvent event) throws IOException {
         stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/view/customer-view.fxml"));
@@ -102,6 +141,11 @@ public class UpdateCustomerController {
         stage.show();
     }
 
+    /**
+     * Initializes the customer data in the form fields.
+     *
+     * @param customer The customer data to initialize the form with.
+     */
     public void initializeCustomerData(Customer customer) {
         this.selectedCustomer = customer;
 
@@ -114,6 +158,11 @@ public class UpdateCustomerController {
         populateCountryComboBox();
     }
 
+    /**
+     * Populates the country selection combo box with available countries.
+     * Sets up a listener for country selection and updates the state combo box accordingly.
+     *
+     */
     private void populateCountryComboBox(){
         try {
             ObservableList<String> countryList = CountryDAO.getAllCountries();
@@ -133,6 +182,9 @@ public class UpdateCustomerController {
 
     }
 
+    /**
+     * Sets the values of the country and state combo boxes based on the customer's selected data.
+     */
     private void setComboBoxValues() {
         CountryDivision countryDivision = DivisionUtil.getCountryAndDivisionByDivisionId(selectedCustomer.getDivisionId());
         if (countryDivision != null) {
@@ -145,6 +197,12 @@ public class UpdateCustomerController {
 
     }
 
+    /**
+     * Updates the state combo box based on the selected country.
+     *
+     * @param country The selected country name.
+     * @param divisionName The division name to set as the selected value in the state combo box.
+     */
     private void updateStateComboBox(String country, String divisionName) {
         try {
             ObservableList<String> divisionList = DivisionUtil.getDivisionsByCountry(country);

@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
  * It interacts with the appointments fxml view to present a table of appointments,
  * enable navigation to other screens, and provide actions for adding, modifying, deleting, and filtering appointments.
  *
- * LAMBDA EXPRESSIONS used on lines 240-242.
+ * LAMBDA EXPRESSIONS used on lines 321-324.
  *
  * @author William Deutsch
  *
@@ -315,7 +315,7 @@ public class AppointmentController implements Initializable {
         /**
          * LAMBDA JUSTIFICATION:
          * Lambda expressions are used here to create concise and readable event handlers directly
-         * within the initialize method. This approach streamlines the code and avoids the need for seperate methods for
+         * within the initialize method. This approach streamlines the code and avoids the need for separate methods for
          * each handler, improving code organization and maintainability.
          */
         viewMonthRadioBtn.setOnAction(event -> updateAppointmentTableView(LocalDate.now().withDayOfMonth(1), LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())));

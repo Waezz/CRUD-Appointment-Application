@@ -16,9 +16,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Data Access Object class for handling database operations related to appointments.
+ *
+ * @author William Deutsch
+ */
 public class AppointmentDAO {
 
-    //Method for fetching all appointments from the DB
+    /**
+     * Retrieves all appointments from the database.
+     *
+     * @return An Observable list of all appointments.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static ObservableList<Appointments> getAllAppointments() throws SQLException {
         String query = "SELECT Appointment_ID, Title, Description, Location, Type, Start, " +
                 "End, Customer_ID, User_ID, Contact_ID FROM APPOINTMENTS";
@@ -53,7 +63,12 @@ public class AppointmentDAO {
         return appointmentsObservableList;
     }
 
-    //Method for adding a new appointment to the DB
+    /**
+     * Adds a new appointment to the database.
+     *
+     * @param appointments The appointment object to add.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static void addAppointment(Appointments appointments) throws SQLException {
         String query = "INSERT INTO appointments (Title, Description, Location, Type, Start, End, Customer_ID, User_ID, Contact_ID ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -75,7 +90,12 @@ public class AppointmentDAO {
         }
     }
 
-    //Method for updating existing appointments in the DB
+    /**
+     * Updates an existing appointment in the database.
+     *
+     * @param appointments The appointment object to update.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static void updateAppointment(Appointments appointments) throws SQLException {
         String query = "UPDATE appointments SET Title = ?, Description = ?, Location = ?, Type = ?, Start = ?, End = ?, Customer_ID = ?, User_ID = ?, Contact_ID = ? WHERE Appointment_ID = ?";
 
@@ -98,17 +118,24 @@ public class AppointmentDAO {
         }
     }
 
-    // Method to get appointments by Month
+    // Method to get appointments by Month - made redundant by use of LAMBDA
     public static ObservableList<Appointments> getAppointmentsByMonth(LocalDate startOfMonth, LocalDate endOfMonth) throws SQLException {
         return getAppointmentsByDateRange(startOfMonth, endOfMonth);
     }
 
-    // Method to get appointments by Week
+    // Method to get appointments by Week - made redundant by use of LAMBDA
     public static ObservableList<Appointments> getAppointmentsByWeek(LocalDate startOfWeek, LocalDate endOfWeek) throws SQLException {
         return getAppointmentsByDateRange(startOfWeek, endOfWeek);
     }
 
-    // Method to get appointments by date range
+    /**
+     * Retrieves a list of appointments within a specified date range
+     *
+     * @param start The start of the date range to retrieve appointments.
+     * @param end The end of the date range to retrieve appointments
+     * @return An Observable list of appointments within a given date range.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static ObservableList<Appointments> getAppointmentsByDateRange(LocalDate start, LocalDate end) throws SQLException {
         String query = "SELECT Appointment_ID, Title, Description, Location, Type, Start, " +
                 "End, Customer_ID, User_ID, Contact_ID FROM APPOINTMENTS WHERE DATE(Start) BETWEEN ? AND ?";
@@ -141,7 +168,12 @@ public class AppointmentDAO {
         return filteredAppointments;
     }
 
-    //Method for removing appointments from the DB
+    /**
+     * Deletes an appointment from the database based on its ID.
+     *
+     * @param appointmentId The ID of the appointment to delete.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static void deleteAppointment(int appointmentId) throws SQLException {
         String query = "DELETE FROM appointments WHERE Appointment_ID = ?";
         try (Connection conn = JDBC.getConnection();
@@ -153,7 +185,9 @@ public class AppointmentDAO {
 
     }
 
-    //Method to map month names to numbers
+    /**
+     * Method to map month names to numbers.
+     */
     private static final Map<String, Integer> MONTHS_MAP = new HashMap<>();
     static {
         MONTHS_MAP.put("January", 1);
@@ -170,7 +204,9 @@ public class AppointmentDAO {
         MONTHS_MAP.put("December", 12);
     }
 
-    //Method to map contact names to contact id's
+    /**
+     * Method to map contact names to contact_id's.
+     */
     private static final Map<String, Integer> CONTACTS_MAP = Map.of(
             "1 - Anika Costa", 1,
             "2 - Daniel Garcia", 2,
@@ -178,16 +214,34 @@ public class AppointmentDAO {
     );
 
 
+    /**
+     * Converts contact name to its corresponding contact ID.
+     *
+     * @param contactName The name of the contact.
+     * @return The ID of the contact.
+     */
     public static int getContactNumber(String contactName) {
         return CONTACTS_MAP.getOrDefault(contactName, -1); //Returns -1 if the name is not found
     }
 
+    /**
+     * Converts a month name to its corresponding number.
+     *
+     * @param monthName The name of the month.
+     * @return The number of the month.
+     */
     public static int getMonthNumber(String monthName) {
         return MONTHS_MAP.getOrDefault(monthName, -1); //Returns -1 if the month name is not found
     }
 
-    //Method that fetches appointments based on the contact ID
-
+    /**
+     * Retrieves all appointments associated with a contact_id.
+     *
+     *
+     * @param contactId The contact ID.
+     * @return An Observable list of appointments associated with the contact ID.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static ObservableList<Appointments> getAppointmentsByContact(int contactId) throws SQLException {
         String query = "SELECT Appointment_ID, Title, Description, Location, Type, Start, " +
                 "End, Customer_ID, User_ID, Contact_ID FROM appointments WHERE Contact_ID = ?";
@@ -221,7 +275,13 @@ public class AppointmentDAO {
         return appointmentsList;
     }
 
-    //Method that finds Customer ID's associated with appointments in a certain month
+    /**
+     * Retrieves a list of customer IDs associated with appointments within a specific month.
+     *
+     * @param monthNumber The number of the month.
+     * @return An Observable list of customer IDS who have appointments in the specified month.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static ObservableList<Integer> getCustomerIdsByMonth(int monthNumber) throws SQLException {
         String query = "SELECT DISTINCT Customer_ID FROM appointments WHERE MONTH(Start) = ?";
         ObservableList<Integer> customerIds = FXCollections.observableArrayList();
@@ -238,7 +298,13 @@ public class AppointmentDAO {
         return customerIds;
     }
 
-    //Method to find Customer ID's associated with appointments of the specified type
+    /**
+     * Retrieves a list of customer IDs associated with appointments of a specific type.
+     *
+     * @param type The type of appointment.
+     * @return An Observable list of customer IDs who have appointments of a specified type.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static ObservableList<Integer> getCustomerIdsByType(String type) throws SQLException {
         String query = "SELECT DISTINCT Customer_ID FROM appointments WHERE Type = ?";
         ObservableList<Integer> customerIds = FXCollections.observableArrayList();
@@ -255,7 +321,13 @@ public class AppointmentDAO {
         return customerIds;
     }
 
-    //Method to find Customer ID's associated with specific countries
+    /**
+     * Retrieves a list of customer IDs associated with appointments in a specific country.
+     *
+     * @param countryName The name of the country.
+     * @return An Observable list of customer IDs who have appointments of the specified type.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static ObservableList<Integer> getCustomerIdsByCountry(String countryName) throws SQLException {
         String query = "SELECT DISTINCT customers.Customer_ID FROM customers " +
                        "JOIN first_level_divisions ON customers.Division_ID = first_level_divisions.Division_ID " +
@@ -274,7 +346,13 @@ public class AppointmentDAO {
         return customerIds;
     }
 
-    //Method to retrieve customer data from associated ID's
+    /**
+     * Retrieves customer data for a given list of customer IDs.
+     *
+     * @param ids An Observable list of customer IDs.
+     * @return An Observable list of customer objects corresponding to the given IDs.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static ObservableList<Customer> getCustomersById(ObservableList<Integer> ids) throws SQLException {
         if (ids.isEmpty()) return FXCollections.observableArrayList();
 
@@ -306,7 +384,12 @@ public class AppointmentDAO {
         return customers;
     }
 
-    //Method to fetch all appointment types
+    /**
+     * Retrieves a list of appointment types from the database.
+     *
+     * @return An Observable list of distinct appointment types.
+     * @throws SQLException If there is an issue executing the query.
+     */
     public static ObservableList<String> getAllAppointmentTypes() throws SQLException {
         String query = "SELECT DISTINCT Type FROM appointments";
         ObservableList<String> types = FXCollections.observableArrayList();
@@ -322,7 +405,13 @@ public class AppointmentDAO {
         return types;
     }
 
-    //Method to return all appointments for a given customer
+    /**
+     * Retrieves all appointments for a given customer.
+     *
+     * @param customerId The ID of the customer.
+     * @return An Observable list of appointments for the specified customer.
+     * @throws SQLException
+     */
     public static ObservableList<Appointments> getAppointmentsByCustomer(int customerId) throws SQLException {
         String query = "SELECT * FROM appointments WHERE Customer_ID = ?";
         ObservableList<Appointments> appointments = FXCollections.observableArrayList();
