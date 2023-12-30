@@ -127,7 +127,7 @@ public class AddCustomerController implements Initializable {
      */
     private void returnToMain(ActionEvent event) throws IOException {
         stage = (Stage)((Button) event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/view/appointment-view.fxml"));
+        scene = FXMLLoader.load(getClass().getResource("/view/customer-view.fxml"));
         stage.setScene(new Scene(scene));
         stage.show();
     }
